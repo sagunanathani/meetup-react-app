@@ -116,3 +116,21 @@ git push -u origin main
      - **When** I navigate to the event details page
      - **Then** I should see a chart that displays the event's data in a visual format
 ```
+
+🧩 How I’ll Use Serverless Functions in the Meet App:
+
+- Frontend: React or similar framework
+- OAuth Layer: Google OAuth 2.0
+- Backend Functions: AWS Lambda
+- API Gateway: To trigger Lambda functions
+- Database (if needed): DynamoDB or Firebase
+- Event Source: Google Calendar API
+
+In the Meet App, serverless functions are a core part of the backend architecture. I’m using AWS Lambda to handle backend logic without maintaining a traditional server. These functions are triggered by user actions and API requests, allowing the app to scale automatically and remain cost-efficient.
+Specifically, I’ll use serverless functions to:
+
+- Fetch event data from the Google Calendar API securely using OAuth2.
+- Process search queries based on city input and return filtered event results.
+- Handle data visualization logic, such as aggregating event genres and locations for chart rendering.
+- Support offline functionality by caching responses and serving them when the user is disconnected.
+  This approach ensures that the app remains lightweight, fast, and responsive across devices. Serverless architecture also simplifies deployment and maintenance, allowing me to focus on building features rather than managing infrastructure.
