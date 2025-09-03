@@ -4,13 +4,35 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: eu-central-1
+  timeout: 29
+  environment:
+    CLIENT_ID: ${file(./config.json):CLIENT_ID}
+    CLIENT_SECRET: ${file(./config.json):CLIENT_SECRET}
+    CALENDAR_ID: ${file(./config.json):CALENDAR_ID}
   deploymentBucket:
     name: meet-app-deploy-eu-central-1-023519301352-v2
 
 functions:
-  hello:
-    handler: handler.hello
+  getAuthURL:
+    handler: handler.handler
     events:
       - http:
-          path: hello
+          path: api/get-auth-url
           method: get
+          cors: true
+
+  getAccessToken:
+    handler: handler.getAccessToken
+    events:
+      - http:
+          path: api/token/{code}
+          method: get
+          cors: true
+
+  getCalendarEvents:
+    handler: handler.getCalendarEvents
+    events:
+      - http:
+          path: api/get-events/{access_token}
+          method: get
+          cors: true
