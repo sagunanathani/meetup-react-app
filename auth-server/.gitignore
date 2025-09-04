@@ -6,5 +6,8 @@ jspm_packages
 .serverless/
 .webpack/
 
-
+# Ignore sensitive JSON files
 config.json
+auth-server/.serverless/*.json
+*.secret.json
+*.env.json
