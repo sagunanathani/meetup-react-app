@@ -1,13 +1,18 @@
-# package directories
-node_modules
-jspm_packages
+# Package directories
+node_modules/
+jspm_packages/
 
-# Serverless directories
+# Serverless build artifacts
 .serverless/
 .webpack/
+serverless-state.json
 
-# Ignore sensitive JSON files
+# Lock files
+package-lock.json
+
+# Sensitive JSON files
 config.json
 auth-server/.serverless/*.json
 *.secret.json
 *.env.json
+
