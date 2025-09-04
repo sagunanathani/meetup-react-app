@@ -1,9 +1,41 @@
-# package directories
-node_modules
-jspm_packages
+# 📦 Package directories
+node_modules/
+jspm_packages/
 
-# Serverless directories
-.serverless
+# ⚙️ Serverless build artifacts
+.serverless/
+serverless-state.json
 
-
+# 🔐 Sensitive config files
 config.json
+.env
+*.pem
+*.key
+*.crt
+
+# 📄 Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# 📝 Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# 🧠 IDE/editor junk
+.vscode/
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 🚫 Credentials folder (if used)
+credentials/
+credentials/*.json
+credentials/*.env
