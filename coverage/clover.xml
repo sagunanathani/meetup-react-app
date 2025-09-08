@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1757349803134" clover="3.2.0">
+  <project timestamp="1757349803134" name="All files">
+    <metrics statements="58" coveredstatements="55" conditionals="20" coveredconditionals="14" methods="22" coveredmethods="18" elements="100" coveredelements="87" complexity="0" loc="58" ncloc="58" packages="2" files="7" classes="7"/>
+    <package name="src">
+      <metrics statements="24" coveredstatements="21" conditionals="2" coveredconditionals="1" methods="10" coveredmethods="6"/>
+      <file name="App.jsx" path="C:\Users\Saguna Nathani\Desktop\VS code Carrer Foundry\meetup-react-app\src\App.jsx">
+        <metrics statements="17" coveredstatements="15" conditionals="2" coveredconditionals="1" methods="7" coveredmethods="4"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="16" count="2" type="stmt"/>
+        <line num="17" count="2" type="stmt"/>
+        <line num="18" count="2" type="stmt"/>
+        <line num="19" count="2" type="stmt"/>
+        <line num="21" count="2" type="stmt"/>
+        <line num="22" count="1" type="stmt"/>
+        <line num="24" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="25" count="0" type="stmt"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="30" count="1" type="stmt"/>
+        <line num="31" count="1" type="stmt"/>
+        <line num="34" count="2" type="stmt"/>
+        <line num="35" count="2" type="stmt"/>
+        <line num="37" count="2" type="stmt"/>
+      </file>
+      <file name="api.js" path="C:\Users\Saguna Nathani\Desktop\VS code Carrer Foundry\meetup-react-app\src\api.js">
+        <metrics statements="6" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="2"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="22" count="0" type="stmt"/>
+      </file>
+      <file name="mock-data.js" path="C:\Users\Saguna Nathani\Desktop\VS code Carrer Foundry\meetup-react-app\src\mock-data.js">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.components">
+      <metrics statements="34" coveredstatements="34" conditionals="18" coveredconditionals="13" methods="12" coveredmethods="12"/>
+      <file name="CitySearch.jsx" path="C:\Users\Saguna Nathani\Desktop\VS code Carrer Foundry\meetup-react-app\src\components\CitySearch.jsx">
+        <metrics statements="19" coveredstatements="19" conditionals="8" coveredconditionals="4" methods="6" coveredmethods="6"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="26" type="stmt"/>
+        <line num="6" count="26" type="stmt"/>
+        <line num="7" count="26" type="stmt"/>
+        <line num="9" count="26" type="stmt"/>
+        <line num="10" count="12" type="stmt"/>
+        <line num="11" count="12" type="cond" truecount="1" falsecount="1"/>
+        <line num="13" count="24" type="stmt"/>
+        <line num="16" count="12" type="stmt"/>
+        <line num="17" count="12" type="stmt"/>
+        <line num="20" count="26" type="stmt"/>
+        <line num="21" count="2" type="stmt"/>
+        <line num="22" count="2" type="stmt"/>
+        <line num="23" count="2" type="stmt"/>
+        <line num="24" count="2" type="cond" truecount="1" falsecount="3"/>
+        <line num="27" count="26" type="stmt"/>
+        <line num="35" count="4" type="stmt"/>
+        <line num="42" count="12" type="stmt"/>
+        <line num="63" count="2" type="stmt"/>
+      </file>
+      <file name="Event.jsx" path="C:\Users\Saguna Nathani\Desktop\VS code Carrer Foundry\meetup-react-app\src\components\Event.jsx">
+        <metrics statements="4" coveredstatements="4" conditionals="4" coveredconditionals="4" methods="2" coveredmethods="2"/>
+        <line num="5" count="8" type="stmt"/>
+        <line num="6" count="8" type="stmt"/>
+        <line num="13" count="3" type="stmt"/>
+        <line num="22" count="3" type="stmt"/>
+      </file>
+      <file name="EventList.jsx" path="C:\Users\Saguna Nathani\Desktop\VS code Carrer Foundry\meetup-react-app\src\components\EventList.jsx">
+        <metrics statements="3" coveredstatements="3" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="9" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="19" count="2" type="stmt"/>
+      </file>
+      <file name="NumberOfEvents.jsx" path="C:\Users\Saguna Nathani\Desktop\VS code Carrer Foundry\meetup-react-app\src\components\NumberOfEvents.jsx">
+        <metrics statements="8" coveredstatements="8" conditionals="4" coveredconditionals="3" methods="2" coveredmethods="2"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="12" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="13" count="2" type="stmt"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="19" count="5" type="stmt"/>
+        <line num="32" count="2" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>

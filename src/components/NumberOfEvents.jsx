@@ -1,20 +1,37 @@
-import { useState } from "react";
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-function NumberOfEvents() {
-  const [numEvents, setNumEvents] = useState(32);
+class NumberOfEvents extends Component {
+  state = {
+    number: this.props.number || 32, // default number
+  };
 
-  return (
-    <div>
-      <label>
-        Number of events:
+  handleChange = (event) => {
+    const value = parseInt(event.target.value, 10);
+    if (!isNaN(value)) {
+      this.setState({ number: value });
+      this.props.onNumberChange(value); // use correct prop
+    }
+  };
+
+  render() {
+    return (
+      <div className="number-of-events">
         <input
           type="number"
-          value={numEvents}
-          onChange={(e) => setNumEvents(e.target.value)}
+          value={this.state.number}
+          onChange={this.handleChange}
+          min="1"
         />
-      </label>
-    </div>
-  );
+      </div>
+    );
+  }
 }
+
+NumberOfEvents.propTypes = {
+  number: PropTypes.number,
+  onNumberChange: PropTypes.func.isRequired,
+};
 
 export default NumberOfEvents;
