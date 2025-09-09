@@ -1,20 +1,21 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CitySearch from "../components/CitySearch";
-import mockData from "../mock-data";
-import { extractLocations } from "../api";
+import { cleanup } from "@testing-library/react";
+const allLocations = ["Berlin, Germany", "Munich, Germany", "London, UK"];
 
 describe("<CitySearch /> component", () => {
-  const allLocations = extractLocations(mockData);
-  // eslint-disable-next-line no-unused-vars
-  let CitySearchComponent;
+  const mockSetCity = jest.fn();
 
   beforeEach(() => {
-    CitySearchComponent = render(<CitySearch allLocations={allLocations} />);
+    mockSetCity.mockClear();
+    render(<CitySearch locations={allLocations} onCityChange={mockSetCity} />);
   });
 
-  test("renders text input", () => {
-    const cityTextBox = screen.getByRole("textbox", { name: /city/i });
+  test("renders text input with class 'city'", () => {
+    const cityTextBox = screen.getByRole("textbox", {
+      name: /search for a city/i,
+    });
     expect(cityTextBox).toBeInTheDocument();
     expect(cityTextBox).toHaveClass("city");
   });
@@ -24,52 +25,103 @@ describe("<CitySearch /> component", () => {
     expect(suggestionList).not.toBeInTheDocument();
   });
 
-  test("renders suggestions list when input gains focus", async () => {
+  // Helper function to test suggestions
+  const typeCityAndCheckSuggestions = async (
+    inputValue,
+    expectedSuggestions
+  ) => {
     const user = userEvent.setup();
-    const cityTextBox = screen.getByRole("textbox", { name: /city/i });
+    const cityTextBox = screen.getByRole("textbox", {
+      name: /search for a city/i,
+    });
+    await user.click(cityTextBox);
+    await user.clear(cityTextBox);
+    await user.type(cityTextBox, inputValue);
+
+    const suggestionItems = await screen.findAllByRole("listitem");
+    expect(suggestionItems).toHaveLength(expectedSuggestions.length);
+
+    expectedSuggestions.forEach((text, index) => {
+      expect(suggestionItems[index]).toHaveTextContent(text);
+    });
+  };
+
+  test.each([
+    ["Berlin", ["Berlin, Germany", "See all cities"]],
+    ["Paris", ["See all cities"]],
+  ])(
+    "shows correct suggestions when typing '%s'",
+    async (inputValue, expectedSuggestions) => {
+      await typeCityAndCheckSuggestions(inputValue, expectedSuggestions);
+    }
+  );
+
+  test("updates textbox value when suggestion is clicked", async () => {
+    const user = userEvent.setup();
+    const cityTextBox = screen.getByRole("textbox", {
+      name: /search for a city/i,
+    });
     await user.click(cityTextBox);
 
-    const suggestionList = screen.getByRole("list");
-    expect(suggestionList).toBeInTheDocument();
-    expect(suggestionList).toHaveClass("suggestions");
-  });
-
-  test("updates suggestions correctly when typing in textbox", async () => {
-    const user = userEvent.setup();
-    const cityTextBox = screen.getByRole("textbox", { name: /city/i });
-    await user.type(cityTextBox, "Berlin");
-
-    const suggestions = allLocations.filter((location) =>
-      location.toUpperCase().includes("BERLIN")
-    );
-
-    const suggestionItems = screen.getAllByRole("listitem");
-    expect(suggestionItems).toHaveLength(suggestions.length + 1); // +1 for "See all cities"
-
-    suggestions.forEach((location, index) => {
-      expect(suggestionItems[index].textContent).toBe(location);
-    });
-  });
-
-  test("renders the suggestion text in the textbox upon clicking on the suggestion", async () => {
-    const user = userEvent.setup();
-    const cityTextBox = screen.getByRole("textbox", { name: /city/i });
-    await user.type(cityTextBox, "Berlin");
-
-    const berlinSuggestion = screen.getAllByRole("listitem")[0];
+    const berlinSuggestion = screen.getByText("Berlin, Germany");
     await user.click(berlinSuggestion);
 
-    expect(cityTextBox).toHaveValue(berlinSuggestion.textContent);
+    expect(cityTextBox).toHaveValue("Berlin, Germany");
+    expect(mockSetCity).toHaveBeenCalledWith("Berlin, Germany");
   });
 
   test("selecting 'See all cities' updates the textbox value", async () => {
     const user = userEvent.setup();
-    const cityTextBox = screen.getByRole("textbox", { name: /city/i });
+    const cityTextBox = screen.getByRole("textbox", {
+      name: /search for a city/i,
+    });
     await user.click(cityTextBox);
 
     const seeAllCities = screen.getByText(/See all cities/i);
     await user.click(seeAllCities);
 
-    expect(cityTextBox).toHaveValue("See all cities");
+    expect(cityTextBox).toHaveValue("all");
+    expect(mockSetCity).toHaveBeenCalledWith("all");
+  });
+
+  // New test: type a city not in locations
+  test("shows only 'See all cities' when typing a city not in locations", async () => {
+    await typeCityAndCheckSuggestions("NonExistentCity", ["See all cities"]);
+  });
+
+  // New test: typing the same city twice
+  test("typing the same city twice maintains suggestions correctly", async () => {
+    const user = userEvent.setup();
+    const cityTextBox = screen.getByRole("textbox", {
+      name: /search for a city/i,
+    });
+    await user.click(cityTextBox);
+
+    // First type
+    await user.clear(cityTextBox);
+    await user.type(cityTextBox, "Berlin");
+
+    // Second type (same value)
+    await user.clear(cityTextBox);
+    await user.type(cityTextBox, "Berlin");
+
+    const suggestionItems = await screen.findAllByRole("listitem");
+    expect(suggestionItems).toHaveLength(2); // Berlin + See all cities
+  });
+
+  // New test: handles empty locations gracefully
+  test("handles empty locations prop gracefully", async () => {
+    cleanup(); // remove any previous renders
+    const user = userEvent.setup();
+    render(<CitySearch locations={[]} onCityChange={mockSetCity} />);
+    const cityTextBox = screen.getByRole("textbox", {
+      name: /search for a city/i,
+    });
+    await user.click(cityTextBox);
+    await user.type(cityTextBox, "Berlin");
+
+    const suggestionItems = await screen.findAllByRole("listitem");
+    expect(suggestionItems).toHaveLength(1); // Only "See all cities"
+    expect(suggestionItems[0]).toHaveTextContent("See all cities");
   });
 });

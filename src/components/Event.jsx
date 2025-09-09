@@ -1,20 +1,31 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 
+import "./App.css";
+
 function Event({ event }) {
   const [showDetails, setShowDetails] = useState(false);
+
+  const eventStart = event.start?.dateTime
+    ? new Date(event.start.dateTime).toLocaleString()
+    : "Date not available";
+
   return (
     <div className="event">
       <h2 className="event-title">{event.summary}</h2>
-      <p className="event-start">{event.created}</p>
-      <p className="event-location">{event.location}</p>
+      <p className="event-start">{eventStart}</p>
+      <p className="event-location">
+        {event.location || "Location not specified"}
+      </p>
       <button
         className="details-btn"
         onClick={() => setShowDetails(!showDetails)}
       >
         {showDetails ? "Hide details" : "Show details"}
       </button>
-      {showDetails && <p className="event-description">{event.description}</p>}
+      {showDetails && event.description && (
+        <p className="event-description">{event.description}</p>
+      )}
     </div>
   );
 }
@@ -27,8 +38,8 @@ Event.propTypes = {
     start: PropTypes.shape({
       dateTime: PropTypes.string,
     }),
-    created: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
+    created: PropTypes.string,
+    description: PropTypes.string,
   }).isRequired,
 };
 

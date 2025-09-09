@@ -1,24 +1,42 @@
 "use strict";
 
 import { google } from "googleapis";
-// eslint-disable-next-line no-unused-vars
 const calendar = google.calendar("v3");
+
 const SCOPES = ["https://www.googleapis.com/auth/calendar.events.readonly"];
 
-// eslint-disable-next-line no-undef, no-unused-vars
-const { CLIENT_SECRET, CLIENT_ID, CALENDAR_ID } = process.env;
+// Lambda environment variables
+// eslint-disable-next-line no-undef
+const CLIENT_ID = process.env.CLIENT_ID;
+// eslint-disable-next-line no-undef
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+// eslint-disable-next-line no-undef
+const CALENDAR_ID = process.env.CALENDAR_ID;
 
-const redirect_uris = ["https://meetup-react-sagunanathani.vercel.app/"];
+// Pick redirect URI based on request origin
+const pickRedirectUri = (origin) => {
+  if (origin && origin.includes("localhost")) {
+    return "http://localhost:5173/";
+  } else {
+    return "https://meetup-react-sagunanathani.vercel.app/";
+  }
+};
 
-const oAuth2Client = new google.auth.OAuth2(
-  CLIENT_ID,
-  CLIENT_SECRET,
-  redirect_uris[0]
-);
-
-// ✅ Lambda-compatible handler for getAuthURL
-export const handler = async () => {
+// ---------------------
+// getAuthURL Lambda handler
+// ---------------------
+export const handler = async (event) => {
   try {
+    const origin = event?.headers?.origin;
+    const redirectUri = pickRedirectUri(origin);
+    console.log("Using redirect URI:", redirectUri);
+
+    const oAuth2Client = new google.auth.OAuth2(
+      CLIENT_ID,
+      CLIENT_SECRET,
+      redirectUri
+    );
+
     const authUrl = oAuth2Client.generateAuthUrl({
       access_type: "offline",
       scope: SCOPES,
@@ -27,7 +45,7 @@ export const handler = async () => {
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Origin": origin || "*",
         "Access-Control-Allow-Credentials": true,
         "Content-Type": "application/json",
       },
@@ -37,33 +55,38 @@ export const handler = async () => {
     console.error("Error generating auth URL:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: "Internal server error" }),
+      body: JSON.stringify({ message: "Internal server error", error }),
     };
   }
 };
 
-// ✅ Lambda-compatible handler for getAccessToken
+// ---------------------
+// getAccessToken Lambda handler
+// ---------------------
 export const getAccessToken = async (event) => {
   try {
+    const origin = event?.headers?.origin;
+    const redirectUri = pickRedirectUri(origin);
+
+    const oAuth2Client = new google.auth.OAuth2(
+      CLIENT_ID,
+      CLIENT_SECRET,
+      redirectUri
+    );
+
     const code = decodeURIComponent(event.pathParameters?.code || "");
 
-    const tokenResponse = await new Promise((resolve, reject) => {
-      oAuth2Client.getToken(code, (error, tokens) => {
-        if (error) {
-          return reject(error);
-        }
-        return resolve(tokens);
-      });
-    });
+    const { tokens } = await oAuth2Client.getToken(code);
+    oAuth2Client.setCredentials(tokens);
 
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Origin": origin || "*",
         "Access-Control-Allow-Credentials": true,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(tokenResponse),
+      body: JSON.stringify(tokens),
     };
   } catch (error) {
     console.error("Error retrieving access token:", error);
@@ -74,36 +97,37 @@ export const getAccessToken = async (event) => {
   }
 };
 
+// ---------------------
+// getCalendarEvents Lambda handler
+// ---------------------
 export const getCalendarEvents = async (event) => {
   try {
+    const origin = event?.headers?.origin;
+    const redirectUri = pickRedirectUri(origin);
+
+    const oAuth2Client = new google.auth.OAuth2(
+      CLIENT_ID,
+      CLIENT_SECRET,
+      redirectUri
+    );
+
     const access_token = decodeURIComponent(
       event.pathParameters?.access_token || ""
     );
     oAuth2Client.setCredentials({ access_token });
 
-    const results = await new Promise((resolve, reject) => {
-      calendar.events.list(
-        {
-          calendarId: CALENDAR_ID,
-          auth: oAuth2Client,
-          timeMin: new Date().toISOString(),
-          singleEvents: true,
-          orderBy: "startTime",
-        },
-        (error, response) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(response);
-          }
-        }
-      );
+    const results = await calendar.events.list({
+      calendarId: CALENDAR_ID,
+      auth: oAuth2Client,
+      timeMin: new Date().toISOString(),
+      singleEvents: true,
+      orderBy: "startTime",
     });
 
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Origin": origin || "*",
         "Access-Control-Allow-Credentials": true,
         "Content-Type": "application/json",
       },

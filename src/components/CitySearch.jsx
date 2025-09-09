@@ -1,68 +1,81 @@
-import { useState } from "react";
+import { Component } from "react";
 import PropTypes from "prop-types";
 
-const CitySearch = ({ allLocations, onCityChange }) => {
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
+import "./App.css";
 
-  const handleInputChanged = (event) => {
-    const value = event.target.value;
-    const filteredLocations = allLocations
-      ? allLocations.filter((location) =>
-          location.toUpperCase().includes(value.toUpperCase())
-        )
-      : [];
-    setQuery(value);
-    setSuggestions(filteredLocations);
+class CitySearch extends Component {
+  state = {
+    query: "",
+    suggestions: [],
   };
 
-  const handleItemClicked = (event) => {
-    const value = event.target.textContent;
-    setQuery(value);
-    setShowSuggestions(false);
-    if (onCityChange) onCityChange(value === "See all cities" ? "all" : value);
+  handleInputChanged = (event) => {
+    const query = event.target.value;
+
+    // Filter locations only if locations prop exists
+    const suggestions =
+      this.props.locations?.filter((location) =>
+        location.toLowerCase().includes(query.toLowerCase())
+      ) ?? [];
+
+    // Update state only if something changes
+    if (
+      query !== this.state.query ||
+      suggestions.length !== this.state.suggestions.length
+    ) {
+      this.setState({ query, suggestions });
+    }
   };
 
-  return (
-    <div id="city-search">
-      <input
-        type="text"
-        className="city"
-        placeholder="Search for a city"
-        value={query}
-        aria-label="city"
-        onFocus={() => setShowSuggestions(true)}
-        onChange={handleInputChanged}
-        data-testid="city-input"
-      />
-      {showSuggestions && (
-        <ul className="suggestions" data-testid="suggestions-list">
-          {suggestions.map((suggestion) => (
+  handleSuggestionClicked = (suggestion) => {
+    const selectedCity = suggestion === "See all cities" ? "all" : suggestion;
+    this.setState({ query: selectedCity, suggestions: [] });
+    this.props.onCityChange(selectedCity);
+  };
+
+  render() {
+    const { query, suggestions } = this.state;
+    const showSuggestions = query.length > 0 || suggestions.length > 0;
+
+    return (
+      <div className="city-search">
+        <label htmlFor="city-input">Search for a city:</label>
+        <input
+          id="city-input"
+          className="city"
+          type="text"
+          placeholder="Search for a city"
+          value={query}
+          onChange={this.handleInputChanged}
+          onFocus={this.handleInputChanged}
+        />
+        {showSuggestions && (
+          <ul role="list" className="suggestions">
+            {suggestions.map((location, index) => (
+              <li
+                role="listitem"
+                key={index}
+                onClick={() => this.handleSuggestionClicked(location)}
+              >
+                {location}
+              </li>
+            ))}
             <li
-              key={suggestion}
-              onClick={handleItemClicked}
-              data-testid="suggestion-item"
+              role="listitem"
+              onClick={() => this.handleSuggestionClicked("See all cities")}
             >
-              {suggestion}
+              See all cities
             </li>
-          ))}
-          <li
-            key="See all cities"
-            onClick={handleItemClicked}
-            data-testid="see-all-cities"
-          >
-            <b>See all cities</b>
-          </li>
-        </ul>
-      )}
-    </div>
-  );
-};
+          </ul>
+        )}
+      </div>
+    );
+  }
+}
 
 CitySearch.propTypes = {
-  allLocations: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onCityChange: PropTypes.func,
+  locations: PropTypes.array.isRequired,
+  onCityChange: PropTypes.func.isRequired,
 };
 
 export default CitySearch;

@@ -134,3 +134,20 @@ Specifically, I’ll use serverless functions to:
 - Handle data visualization logic, such as aggregating event genres and locations for chart rendering.
 - Support offline functionality by caching responses and serving them when the user is disconnected.
   This approach ensures that the app remains lightweight, fast, and responsive across devices. Serverless architecture also simplifies deployment and maintenance, allowing me to focus on building features rather than managing infrastructure.
+
+Replace the Following Placeholders:
+in "package.json": GITHUB_USERNAME (1 occurrence).
+in "static-site-test/index.html", replace:
+GET_AUTH_URL (1 occurrence).
+GET_ACCESS_TOKEN_URL (1 occurrence). Note: paste the url without "/{code}"
+GET_EVENTS_URL (1 occurrence). Note: paste the url without "/{access_token}"
+in "auth-server/handler.js": GITHUB_USERNAME (1 occurrence).
+Add Missing Config
+You can refer to Exercise 4.3 if you need specific instructions on how to re-create the missing "auth-server/config.json" file. Here are some quick steps, however, if you got stuck, refer to exercise 4.3.
+
+create "config.json" file inside the "auth-server" folder.
+add necessery Google Calendar API credentials:
+CLIENT_ID (get its value from your Google Calendar API credentials file)
+CLIENT_SECRET (get it from your Google Calendar API credentials file)
+CALENDAR_ID (set its value to this string: "fullstackwebdev@careerfoundry.com")
+Note that this demo repo contains a sample solution for the Exercise 4.4 task

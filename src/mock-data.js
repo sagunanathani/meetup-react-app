@@ -8,6 +8,7 @@ const mockData = [
     location: "Berlin, Germany",
     start: { dateTime: "2025-09-15T18:00:00+02:00" },
     end: { dateTime: "2025-09-15T20:00:00+02:00" },
+    created: "2025-09-01T12:00:00Z", // Add created date
   },
   {
     kind: "calendar#event",
@@ -18,6 +19,7 @@ const mockData = [
     location: "Munich, Germany",
     start: { dateTime: "2025-09-20T14:00:00+02:00" },
     end: { dateTime: "2025-09-20T16:00:00+02:00" },
+    created: "2025-09-02T09:00:00Z", // Add created date
   },
 ];
 

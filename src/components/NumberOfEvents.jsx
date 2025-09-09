@@ -1,36 +1,28 @@
-// eslint-disable-next-line no-unused-vars
-import React, { Component } from "react";
 import PropTypes from "prop-types";
+import "./App.css";
 
-class NumberOfEvents extends Component {
-  state = {
-    number: this.props.number || 32, // default number
+const NumberOfEvents = ({ number, onNumberChange }) => {
+  const handleChange = (event) => {
+    const value = Number(event.target.value);
+    onNumberChange(value);
   };
 
-  handleChange = (event) => {
-    const value = parseInt(event.target.value, 10);
-    if (!isNaN(value)) {
-      this.setState({ number: value });
-      this.props.onNumberChange(value); // use correct prop
-    }
-  };
-
-  render() {
-    return (
-      <div className="number-of-events">
-        <input
-          type="number"
-          value={this.state.number}
-          onChange={this.handleChange}
-          min="1"
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div className="number-of-events">
+      <label htmlFor="number-input">Number of events: </label>
+      <input
+        id="number-input"
+        type="number"
+        className="number"
+        value={number}
+        onChange={handleChange}
+      />
+    </div>
+  );
+};
 
 NumberOfEvents.propTypes = {
-  number: PropTypes.number,
+  number: PropTypes.number.isRequired,
   onNumberChange: PropTypes.func.isRequired,
 };
 

@@ -1,45 +1,65 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import Event from "../components/Event";
 
-// Mock event data
 const mockEvent = {
-  id: 1,
+  id: "1",
   summary: "React Meetup",
-  location: "Online",
-  start: { dateTime: "2025-09-08T10:00:00" },
-  created: "2025-09-01T09:00:00",
-  description: "This is a React meetup event.",
+  location: "Berlin, Germany",
+  start: { dateTime: "2025-09-09T18:00:00Z" },
+  description: "This is a test event for React developers.",
 };
 
 describe("<Event /> component", () => {
-  test("renders event title, start time, location, and show details button", () => {
+  test("renders event summary, start date, and location", () => {
     render(<Event event={mockEvent} />);
 
-    expect(screen.queryByText(mockEvent.summary)).toBeInTheDocument();
-    expect(screen.queryByText(mockEvent.created)).toBeInTheDocument();
-    expect(screen.queryByText(mockEvent.location)).toBeInTheDocument();
-    expect(screen.getByText(/show details/i)).toBeInTheDocument();
+    expect(screen.getByText(mockEvent.summary)).toBeInTheDocument();
+    expect(screen.getByText(/9\/9\/2025/i)).toBeInTheDocument(); // Adjust date format if needed
+    expect(screen.getByText(mockEvent.location)).toBeInTheDocument();
   });
 
-  test("shows event details when show details button is clicked", () => {
+  test("renders 'Show details' button by default", () => {
     render(<Event event={mockEvent} />);
-
-    const button = screen.getByText(/show details/i);
-    fireEvent.click(button);
-
-    expect(screen.queryByText(mockEvent.description)).toBeInTheDocument();
-    expect(screen.getByText(/hide details/i)).toBeInTheDocument();
+    const button = screen.getByRole("button", { name: /show details/i });
+    expect(button).toBeInTheDocument();
   });
 
-  test("hides event details when hide details button is clicked", () => {
+  test("toggles event description on button click", async () => {
+    const user = userEvent.setup();
     render(<Event event={mockEvent} />);
+    const button = screen.getByRole("button", { name: /show details/i });
 
-    const button = screen.getByText(/show details/i);
-    fireEvent.click(button); // show details first
-    expect(screen.queryByText(mockEvent.description)).toBeInTheDocument();
+    // Click to show details
+    await user.click(button);
+    expect(screen.getByText(mockEvent.description)).toBeInTheDocument();
+    expect(button).toHaveTextContent(/hide details/i);
 
-    fireEvent.click(button); // hide details
+    // Click to hide details
+    await user.click(button);
     expect(screen.queryByText(mockEvent.description)).not.toBeInTheDocument();
-    expect(screen.getByText(/show details/i)).toBeInTheDocument();
+    expect(button).toHaveTextContent(/show details/i);
+  });
+
+  test("shows fallback text when location is missing", () => {
+    const eventWithoutLocation = { ...mockEvent, location: "" };
+    render(<Event event={eventWithoutLocation} />);
+    expect(screen.getByText(/location not specified/i)).toBeInTheDocument();
+  });
+
+  test("shows fallback text when start date is missing", () => {
+    const eventWithoutStart = { ...mockEvent, start: null };
+    render(<Event event={eventWithoutStart} />);
+    expect(screen.getByText(/date not available/i)).toBeInTheDocument();
+  });
+
+  test("does not render description if it is missing", () => {
+    const eventWithoutDescription = { ...mockEvent, description: "" };
+    render(<Event event={eventWithoutDescription} />);
+    const button = screen.getByRole("button", { name: /show details/i });
+    expect(screen.queryByText(/this is a test event/i)).not.toBeInTheDocument();
+    // Click button shouldn't show anything
+    userEvent.click(button);
+    expect(screen.queryByText(/this is a test event/i)).not.toBeInTheDocument();
   });
 });

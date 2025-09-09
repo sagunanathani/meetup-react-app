@@ -1,26 +1,35 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import App from "../App";
 
-// Mock mockEvents so App has something to render
-jest.mock("../mockEvent", () => ({
-  mockEvents: [
-    {
-      id: 1,
-      summary: "React Meetup",
-      location: "Online",
-      start: { dateTime: "2025-09-08T10:00:00" },
-      created: "2025-09-01T09:00:00",
-      description: "This is a React meetup event.",
-    },
-  ],
+jest.mock("../api", () => ({
+  getEvents: jest.fn(() =>
+    Promise.resolve(
+      Array.from({ length: 32 }, (_, i) => ({
+        id: i + 1,
+        summary: `Event ${i + 1}`,
+        location: i % 2 === 0 ? "Berlin, Germany" : "Munich, Germany",
+        start: { dateTime: "2025-09-10T10:00" },
+        created: "2025-09-01T08:00",
+      }))
+    )
+  ),
 }));
 
-test("renders app without crashing", () => {
+test("renders number of events matching user input", async () => {
   render(<App />);
 
-  // Check that <h1> text renders
-  expect(screen.getByText(/Meetup Events/i)).toBeInTheDocument();
+  const numberInput = screen.getByRole("spinbutton");
 
-  // Check that the mock event is displayed
-  expect(screen.getByText(/React Meetup/i)).toBeInTheDocument();
+  // Change the input value to 10
+  fireEvent.change(numberInput, { target: { value: 10 } });
+
+  // Wait for events to update
+  await waitFor(() => {
+    const renderedEvents = screen.getAllByRole("listitem");
+    expect(renderedEvents.length).toBe(10);
+  });
+
+  // Optional: check first and last events in the slice
+  expect(screen.getByText("Event 1")).toBeInTheDocument();
+  expect(screen.getByText("Event 10")).toBeInTheDocument();
 });

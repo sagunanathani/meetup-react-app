@@ -1,21 +1,25 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import NumberOfEvents from "../components/NumberOfEvents";
+import { useState } from "react";
 
-describe("<NumberOfEvents />", () => {
-  test("renders number input and changes value", async () => {
-    const user = userEvent.setup();
-    const updateNumber = jest.fn();
+test("renders number input and calls onNumberChange", async () => {
+  const user = userEvent.setup();
 
-    render(<NumberOfEvents number={0} onNumberChange={updateNumber} />);
+  // Wrapper to manage controlled component state
+  const Wrapper = () => {
+    const [number, setNumber] = useState(32);
+    return <NumberOfEvents number={number} onNumberChange={setNumber} />;
+  };
 
-    const input = screen.getByRole("spinbutton");
+  render(<Wrapper />);
 
-    // Clear input explicitly
-    input.value = "";
-    await user.type(input, "10");
+  const input = screen.getByRole("spinbutton");
+  expect(input).toHaveValue(32);
 
-    expect(input.value).toBe("10");
-    expect(updateNumber).toHaveBeenCalledWith(10);
-  });
+  // Type 10
+  await user.clear(input);
+  await user.type(input, "10");
+
+  expect(input).toHaveValue(10); // Now controlled value updates
 });
