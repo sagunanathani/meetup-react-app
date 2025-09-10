@@ -1,8 +1,6 @@
 import { Component } from "react";
 import PropTypes from "prop-types";
 
-import "./App.css";
-
 class CitySearch extends Component {
   state = {
     query: "",
@@ -12,13 +10,11 @@ class CitySearch extends Component {
   handleInputChanged = (event) => {
     const query = event.target.value;
 
-    // Filter locations only if locations prop exists
     const suggestions =
       this.props.locations?.filter((location) =>
         location.toLowerCase().includes(query.toLowerCase())
       ) ?? [];
 
-    // Update state only if something changes
     if (
       query !== this.state.query ||
       suggestions.length !== this.state.suggestions.length
@@ -42,7 +38,7 @@ class CitySearch extends Component {
         <label htmlFor="city-input">Search for a city:</label>
         <input
           id="city-input"
-          className="city"
+          className="input"
           type="text"
           placeholder="Search for a city"
           value={query}
@@ -50,7 +46,7 @@ class CitySearch extends Component {
           onFocus={this.handleInputChanged}
         />
         {showSuggestions && (
-          <ul role="list" className="suggestions">
+          <ul className="suggestions" role="list">
             {suggestions.map((location, index) => (
               <li
                 role="listitem"

@@ -1,4 +1,5 @@
-const mockData = [
+// 🔹 Original Mock Events
+const originalEvents = [
   {
     kind: "calendar#event",
     etag: '"123456789"',
@@ -8,7 +9,7 @@ const mockData = [
     location: "Berlin, Germany",
     start: { dateTime: "2025-09-15T18:00:00+02:00" },
     end: { dateTime: "2025-09-15T20:00:00+02:00" },
-    created: "2025-09-01T12:00:00Z", // Add created date
+    created: "2025-09-01T12:00:00Z",
   },
   {
     kind: "calendar#event",
@@ -19,8 +20,143 @@ const mockData = [
     location: "Munich, Germany",
     start: { dateTime: "2025-09-20T14:00:00+02:00" },
     end: { dateTime: "2025-09-20T16:00:00+02:00" },
-    created: "2025-09-02T09:00:00Z", // Add created date
+    created: "2025-09-02T09:00:00Z",
   },
 ];
 
-export default mockData;
+// 🔹 Additional Mock Events
+const extraEvents = [
+  {
+    kind: "calendar#event",
+    etag: '"111111111"',
+    id: "ijkl9012",
+    status: "confirmed",
+    summary: "Angular Workshop",
+    location: "Hamburg, Germany",
+    start: { dateTime: "2025-09-22T10:00:00+02:00" },
+    end: { dateTime: "2025-09-22T12:00:00+02:00" },
+    created: "2025-09-03T08:00:00Z",
+  },
+  {
+    kind: "calendar#event",
+    etag: '"222222222"',
+    id: "mnop3456",
+    status: "confirmed",
+    summary: "Node.js Meetup",
+    location: "Frankfurt, Germany",
+    start: { dateTime: "2025-09-25T18:00:00+02:00" },
+    end: { dateTime: "2025-09-25T20:00:00+02:00" },
+    created: "2025-09-04T11:00:00Z",
+  },
+  {
+    kind: "calendar#event",
+    etag: '"333333333"',
+    id: "qrst7890",
+    status: "confirmed",
+    summary: "React Native Hackathon",
+    location: "Berlin, Germany",
+    start: { dateTime: "2025-09-28T09:00:00+02:00" },
+    end: { dateTime: "2025-09-28T17:00:00+02:00" },
+    created: "2025-09-05T14:00:00Z",
+  },
+  {
+    kind: "calendar#event",
+    etag: '"444444444"',
+    id: "uvwx1234",
+    status: "confirmed",
+    summary: "CSS Grid Masterclass",
+    location: "Munich, Germany",
+    start: { dateTime: "2025-10-01T15:00:00+02:00" },
+    end: { dateTime: "2025-10-01T17:00:00+02:00" },
+    created: "2025-09-06T09:30:00Z",
+  },
+  {
+    kind: "calendar#event",
+    etag: '"555555555"',
+    id: "yzab5678",
+    status: "confirmed",
+    summary: "Vue.js Beginners Workshop",
+    location: "Stuttgart, Germany",
+    start: { dateTime: "2025-10-03T14:00:00+02:00" },
+    end: { dateTime: "2025-10-03T16:00:00+02:00" },
+    created: "2025-09-07T12:45:00Z",
+  },
+  {
+    kind: "calendar#event",
+    etag: '"666666666"',
+    id: "cdef9012",
+    status: "confirmed",
+    summary: "Fullstack Developer Meetup",
+    location: "Cologne, Germany",
+    start: { dateTime: "2025-10-05T18:00:00+02:00" },
+    end: { dateTime: "2025-10-05T20:00:00+02:00" },
+    created: "2025-09-08T10:00:00Z",
+  },
+  {
+    kind: "calendar#event",
+    etag: '"777777777"',
+    id: "ghij3456",
+    status: "confirmed",
+    summary: "GraphQL Workshop",
+    location: "Dresden, Germany",
+    start: { dateTime: "2025-10-08T09:00:00+02:00" },
+    end: { dateTime: "2025-10-08T11:00:00+02:00" },
+    created: "2025-09-09T08:30:00Z",
+  },
+  {
+    kind: "calendar#event",
+    etag: '"888888888"',
+    id: "klmn7890",
+    status: "confirmed",
+    summary: "TypeScript Bootcamp",
+    location: "Leipzig, Germany",
+    start: { dateTime: "2025-10-10T13:00:00+02:00" },
+    end: { dateTime: "2025-10-10T16:00:00+02:00" },
+    created: "2025-09-10T11:15:00Z",
+  },
+  {
+    kind: "calendar#event",
+    etag: '"999999999"',
+    id: "opqr1234",
+    status: "confirmed",
+    summary: "Next.js Advanced Workshop",
+    location: "Düsseldorf, Germany",
+    start: { dateTime: "2025-10-12T10:00:00+02:00" },
+    end: { dateTime: "2025-10-12T12:00:00+02:00" },
+    created: "2025-09-11T09:45:00Z",
+  },
+  {
+    kind: "calendar#event",
+    etag: '"1010101010"',
+    id: "stuv5678",
+    status: "confirmed",
+    summary: "React Testing with Jest",
+    location: "Nuremberg, Germany",
+    start: { dateTime: "2025-10-15T14:00:00+02:00" },
+    end: { dateTime: "2025-10-15T16:00:00+02:00" },
+    created: "2025-09-12T10:20:00Z",
+  },
+];
+
+// 🔹 Merge original + extra events
+const events = [...originalEvents, ...extraEvents];
+
+// 🔹 Mock users (includes your tutor)
+const users = [
+  {
+    id: "user1",
+    username: "TutorTest",
+    email: "atozpp63@gmail.com",
+    password: "Test1234!",
+    birthday: "1980-01-01",
+  },
+  {
+    id: "user2",
+    username: "DemoUser",
+    email: "demo@example.com",
+    password: "demo123",
+    birthday: "1995-05-15",
+  },
+];
+
+export { events, users };

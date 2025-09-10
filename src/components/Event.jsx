@@ -1,28 +1,26 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-import "./App.css";
-
 function Event({ event }) {
   const [showDetails, setShowDetails] = useState(false);
 
   const eventStart = event.start?.dateTime
-    ? new Date(event.start.dateTime).toLocaleString()
+    ? new Date(event.start.dateTime).toLocaleString([], {
+        dateStyle: "medium",
+        timeStyle: "short",
+      })
     : "Date not available";
 
   return (
     <div className="event">
-      <h2 className="event-title">{event.summary}</h2>
-      <p className="event-start">{eventStart}</p>
-      <p className="event-location">
-        {event.location || "Location not specified"}
-      </p>
-      <button
-        className="details-btn"
-        onClick={() => setShowDetails(!showDetails)}
-      >
+      <h3>{event.summary}</h3>
+      <p>{eventStart}</p>
+      <p>{event.location || "Location not specified"}</p>
+
+      <button onClick={() => setShowDetails(!showDetails)}>
         {showDetails ? "Hide details" : "Show details"}
       </button>
+
       {showDetails && event.description && (
         <p className="event-description">{event.description}</p>
       )}

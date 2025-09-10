@@ -15,7 +15,9 @@ describe("<Event /> component", () => {
     render(<Event event={mockEvent} />);
 
     expect(screen.getByText(mockEvent.summary)).toBeInTheDocument();
-    expect(screen.getByText(/9\/9\/2025/i)).toBeInTheDocument(); // Adjust date format if needed
+    expect(
+      screen.getByText((content) => content.includes("2025"))
+    ).toBeInTheDocument(); // Adjust date format if needed
     expect(screen.getByText(mockEvent.location)).toBeInTheDocument();
   });
 

@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import "./App.css";
 
 const NumberOfEvents = ({ number, onNumberChange }) => {
   const handleChange = (event) => {
@@ -13,7 +12,7 @@ const NumberOfEvents = ({ number, onNumberChange }) => {
       <input
         id="number-input"
         type="number"
-        className="number"
+        className="input"
         value={number}
         onChange={handleChange}
       />
