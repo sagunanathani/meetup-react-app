@@ -1,4 +1,5 @@
 // api.js
+import { events as mockEvents } from "./mock-data.js";
 
 // ----------------------------
 // Check if token is valid
@@ -74,6 +75,7 @@ export const getAccessToken = async () => {
 // ----------------------------
 // Remove query params from URL
 // ----------------------------
+//This prevents the ?code= parameter from staying in the URL after the token is stored.
 const removeQuery = () => {
   const newurl =
     window.location.protocol +
@@ -88,10 +90,11 @@ const removeQuery = () => {
 // ----------------------------
 export const getEvents = async () => {
   console.log("getEvents called");
-  // Use mock data on localhost
-  /*  if (window.location.href.startsWith("http://localhost")) {
-    return mockData;
-  } */
+
+  // Use mock data on localhost - for api data comments this only if condition
+  if (window.location.href.startsWith("http://localhost")) {
+    return mockEvents;
+  }
 
   let token = await getAccessToken();
   if (!token) return null; // exit if redirecting

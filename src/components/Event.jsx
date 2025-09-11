@@ -17,7 +17,10 @@ function Event({ event }) {
       <p>{eventStart}</p>
       <p>{event.location || "Location not specified"}</p>
 
-      <button onClick={() => setShowDetails(!showDetails)}>
+      <button
+        className="details-btn"
+        onClick={() => setShowDetails(!showDetails)}
+      >
         {showDetails ? "Hide details" : "Show details"}
       </button>
 

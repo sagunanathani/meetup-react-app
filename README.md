@@ -154,6 +154,29 @@ Note that this demo repo contains a sample solution for the Exercise 4.4 task
 
 testing>
 
+🧪 Testing Approaches: TDD vs BDD
+✅ Test-Driven Development (TDD)
+Used by: Developers
+Focus: Code correctness (unit & integration tests)
+Process: Red → Green → Refactor
+Frameworks: Jest, Mocha, JUnit, NUnit
+Example in this project: Testing that <Event /> renders a “Show details” button before writing the component.
+
+🤝 Behavior-Driven Development (BDD)
+Used by: Developers + Non-developers (QA, PMs, Business Analysts)
+Focus: User behavior & application features
+Process: Feature → Scenario (Given-When-Then) → Code
+Frameworks: Cucumber, Jasmine, RSpec, Behave, Puppeteer/Playwright (for E2E)
+Example in this project:
+Scenario:
+Given a user is on the events page
+When they click "Show details"
+Then the event details are displayed
+
+⚡ In this project:
+TDD is applied with Jest for unit & snapshot testing.
+BDD is applied with Puppeteer for end-to-end user scenarios.
+
 Unit Testing for Features 1-3 (_exercise:4.4_)
 
 - Feature 1: EventList and Event components tested for rendering and toggle details
@@ -173,7 +196,16 @@ Integration Testing Feature 3: Implement specify number of events functionality 
 - Applied CSS styling to center event box and improve readability.
 - All tests passing successfully.
 
-chore(tests): implement acceptance tests for city search and event filtering (_exercise:4.6_)
+Acceptance testing Feature 1: implement acceptance tests for city search and event filtering (_exercise:4.6_)
+This is structured to clearly indicate:
+
+1. Scope: Acceptance testing for city search and event filtering.
+2. Details: User flows tested (typing, suggestions, selecting city, event list updates).
+3. Fixes: Use of screen API and act(...) for React warnings.
+4. Tools: jest-cucumber, React Testing Library, mock data.
+
+create a new “features” folder inside “src” folder to hold all of your Gherkin files (similar to the “tests” folder created for Jest test files) - Creating Gherkin Files for Each Feature
+npm install jest-cucumber --save-dev
 
 - Added jest-cucumber feature tests for filtering events by city
 - Tested user interactions: typing in city textbox, viewing suggestions, and selecting a city
@@ -181,3 +213,18 @@ chore(tests): implement acceptance tests for city search and event filtering (_e
 - Updated tests to use React Testing Library's screen API to avoid AppDOM undefined errors
 - Ensured that event lists update correctly based on selected city
 - Wrapped async interactions in act(...) to suppress React state update warnings
+
+End-to-End Testing Feature 2: "Show/Hide Event Details": (_exercise:4.6_)
+end-to-end test files in the same “tests” folder as your Jest files (rather than separating them) - ”EndToEnd.test.js”
+npm install --save-dev puppeteer
+
+Add end-to-end testing with Puppeteer:
+
+- Integrated Puppeteer as the framework for end-to-end (E2E) testing.
+- Implemented scenarios for event details toggle:
+  Scenario 1: An event element is collapsed by default.
+  Scenario 2: User can expand an event to see details.
+  Scenario 3: User can collapse an event to hide details.
+- Configured Jest with increased timeout to support real browser runs.
+- Added setupTests.js to filter noisy console warnings during test execution.
+- Verified tests with both headless (fast) and non-headless (debug) modes.

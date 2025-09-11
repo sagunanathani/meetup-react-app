@@ -45,3 +45,53 @@ exports[`<EventList /> component matches snapshot 1`] = `
   </ul>
 </DocumentFragment>
 `;
+
+exports[`<EventList /> component matches updated snapshot 1`] = `
+<DocumentFragment>
+  <ul
+    class="events-container"
+    data-testid="event-list"
+  >
+    <li>
+      <div
+        class="event"
+      >
+        <h3>
+          Event 1
+        </h3>
+        <p>
+          10 Sept 2025, 10:00 am
+        </p>
+        <p>
+          Berlin, Germany
+        </p>
+        <button
+          class="details-btn"
+        >
+          Show details
+        </button>
+      </div>
+    </li>
+    <li>
+      <div
+        class="event"
+      >
+        <h3>
+          Event 2
+        </h3>
+        <p>
+          10 Sept 2025, 12:00 pm
+        </p>
+        <p>
+          Munich, Germany
+        </p>
+        <button
+          class="details-btn"
+        >
+          Show details
+        </button>
+      </div>
+    </li>
+  </ul>
+</DocumentFragment>
+`;

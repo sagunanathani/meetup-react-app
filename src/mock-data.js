@@ -10,6 +10,7 @@ const originalEvents = [
     start: { dateTime: "2025-09-15T18:00:00+02:00" },
     end: { dateTime: "2025-09-15T20:00:00+02:00" },
     created: "2025-09-01T12:00:00Z",
+    description: "Join us for an evening of React talks and networking!",
   },
   {
     kind: "calendar#event",
@@ -21,6 +22,7 @@ const originalEvents = [
     start: { dateTime: "2025-09-20T14:00:00+02:00" },
     end: { dateTime: "2025-09-20T16:00:00+02:00" },
     created: "2025-09-02T09:00:00Z",
+    description: "Hands-on workshop to learn Vue basics and best practices.",
   },
 ];
 
@@ -36,6 +38,8 @@ const extraEvents = [
     start: { dateTime: "2025-09-22T10:00:00+02:00" },
     end: { dateTime: "2025-09-22T12:00:00+02:00" },
     created: "2025-09-03T08:00:00Z",
+    description:
+      "A practical introduction to Angular fundamentals with live coding exercises.",
   },
   {
     kind: "calendar#event",
@@ -47,6 +51,8 @@ const extraEvents = [
     start: { dateTime: "2025-09-25T18:00:00+02:00" },
     end: { dateTime: "2025-09-25T20:00:00+02:00" },
     created: "2025-09-04T11:00:00Z",
+    description:
+      "Join developers to discuss Node.js trends, packages, and best practices.",
   },
   {
     kind: "calendar#event",
@@ -58,6 +64,8 @@ const extraEvents = [
     start: { dateTime: "2025-09-28T09:00:00+02:00" },
     end: { dateTime: "2025-09-28T17:00:00+02:00" },
     created: "2025-09-05T14:00:00Z",
+    description:
+      "A full-day hackathon building apps with React Native and Expo.",
   },
   {
     kind: "calendar#event",
@@ -69,6 +77,8 @@ const extraEvents = [
     start: { dateTime: "2025-10-01T15:00:00+02:00" },
     end: { dateTime: "2025-10-01T17:00:00+02:00" },
     created: "2025-09-06T09:30:00Z",
+    description:
+      "Deep dive into CSS Grid layouts with hands-on design examples.",
   },
   {
     kind: "calendar#event",
@@ -80,6 +90,8 @@ const extraEvents = [
     start: { dateTime: "2025-10-03T14:00:00+02:00" },
     end: { dateTime: "2025-10-03T16:00:00+02:00" },
     created: "2025-09-07T12:45:00Z",
+    description:
+      "Step-by-step introduction to Vue.js for beginners with simple projects.",
   },
   {
     kind: "calendar#event",
@@ -91,6 +103,8 @@ const extraEvents = [
     start: { dateTime: "2025-10-05T18:00:00+02:00" },
     end: { dateTime: "2025-10-05T20:00:00+02:00" },
     created: "2025-09-08T10:00:00Z",
+    description:
+      "Networking event for fullstack developers to share experiences and tools.",
   },
   {
     kind: "calendar#event",
@@ -102,6 +116,8 @@ const extraEvents = [
     start: { dateTime: "2025-10-08T09:00:00+02:00" },
     end: { dateTime: "2025-10-08T11:00:00+02:00" },
     created: "2025-09-09T08:30:00Z",
+    description:
+      "Learn how to design GraphQL schemas and use Apollo for queries.",
   },
   {
     kind: "calendar#event",
@@ -113,6 +129,8 @@ const extraEvents = [
     start: { dateTime: "2025-10-10T13:00:00+02:00" },
     end: { dateTime: "2025-10-10T16:00:00+02:00" },
     created: "2025-09-10T11:15:00Z",
+    description:
+      "Bootcamp to master TypeScript essentials for modern web development.",
   },
   {
     kind: "calendar#event",
@@ -124,6 +142,8 @@ const extraEvents = [
     start: { dateTime: "2025-10-12T10:00:00+02:00" },
     end: { dateTime: "2025-10-12T12:00:00+02:00" },
     created: "2025-09-11T09:45:00Z",
+    description:
+      "Advanced techniques in Next.js, including SSR, ISR, and API routes.",
   },
   {
     kind: "calendar#event",
@@ -135,6 +155,8 @@ const extraEvents = [
     start: { dateTime: "2025-10-15T14:00:00+02:00" },
     end: { dateTime: "2025-10-15T16:00:00+02:00" },
     created: "2025-09-12T10:20:00Z",
+    description:
+      "Hands-on session for writing React tests with Jest and React Testing Library.",
   },
 ];
 

@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import EventList from "../components/EventList";
 
+// 🔹 Updated mock events to match your current structure
 const mockEvents = [
   {
     id: 1,
@@ -22,23 +23,26 @@ describe("<EventList /> component", () => {
   test("renders the list container and correct number of events", () => {
     render(<EventList events={mockEvents} />);
 
-    // Check container
+    // 🔹 Check container exists
     const eventList = screen.getByTestId("event-list");
     expect(eventList).toBeInTheDocument();
 
-    // Check number of list items
+    // 🔹 Check number of list items
     const eventItems = within(eventList).getAllByRole("listitem");
     expect(eventItems).toHaveLength(mockEvents.length);
 
-    // Check each item’s content
+    // 🔹 Check content of first event
     expect(eventItems[0]).toHaveTextContent("Event 1");
     expect(eventItems[0]).toHaveTextContent("Berlin, Germany");
+    expect(eventItems[0].querySelector("button")).toHaveClass("details-btn");
 
+    // 🔹 Check content of second event
     expect(eventItems[1]).toHaveTextContent("Event 2");
     expect(eventItems[1]).toHaveTextContent("Munich, Germany");
+    expect(eventItems[1].querySelector("button")).toHaveClass("details-btn");
   });
 
-  test("matches snapshot", () => {
+  test("matches updated snapshot", () => {
     const { asFragment } = render(<EventList events={mockEvents} />);
     expect(asFragment()).toMatchSnapshot();
   });
