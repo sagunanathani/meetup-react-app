@@ -35,18 +35,24 @@ class CitySearch extends Component {
 
     return (
       <div className="city-search">
-        <label htmlFor="city-input">Search for a city:</label>
+        <label htmlFor="city-search">Search for a city:</label>
         <input
-          id="city-input"
-          className="input"
+          id="city-search"
+          className="city"
           type="text"
           placeholder="Search for a city"
+          role="textbox"
           value={query}
           onChange={this.handleInputChanged}
           onFocus={this.handleInputChanged}
         />
         {showSuggestions && (
-          <ul className="suggestions" role="list">
+          <ul
+            className="suggestions"
+            id="suggestions-list"
+            data-testid="suggestions-list"
+            role="list"
+          >
             {suggestions.map((location, index) => (
               <li
                 role="listitem"

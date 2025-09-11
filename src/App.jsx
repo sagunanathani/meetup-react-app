@@ -15,10 +15,14 @@ function App() {
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
+
       try {
-        const allEvents = await getEvents();
-        console.log("All events:", allEvents);
-        setEvents(allEvents);
+        const allEvents =
+          process.env.REACT_APP_USE_MOCK === "true"
+            ? mockEvents
+            : await getEvents();
+        console.log("Mock events in app:", mockEvents);
+        setEvents(allEvents || []); // fallback to empty array
       } catch (error) {
         console.error("Error fetching events:", error);
       } finally {
@@ -28,21 +32,11 @@ function App() {
     fetchEvents();
   }, []);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      if (process.env.REACT_APP_USE_MOCK === "true") {
-        setEvents(mockEvents);
-        console.log("Mock events in app:", mockEvents);
-      } else {
-        const allEvents = await getEvents();
-        setEvents(allEvents);
-      }
-    };
-    fetchEvents();
-  }, []);
-
   // Get unique city locations for the CitySearch component
-  const allLocations = [...new Set(events.map((event) => event.location))];
+  // Prevent map from running if events is undefined
+  const allLocations = events?.length
+    ? [...new Set(events.map((e) => e.location))]
+    : [];
 
   // Filter events by city
   const filteredEvents =

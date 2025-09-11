@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import EventList from "../components/EventList";
 
 const mockEvents = [
@@ -19,16 +19,27 @@ const mockEvents = [
 ];
 
 describe("<EventList /> component", () => {
-  test("renders the correct number of events and their details", () => {
+  test("renders the list container and correct number of events", () => {
     render(<EventList events={mockEvents} />);
 
-    const eventItems = screen.getAllByRole("listitem");
+    // Check container
+    const eventList = screen.getByTestId("event-list");
+    expect(eventList).toBeInTheDocument();
+
+    // Check number of list items
+    const eventItems = within(eventList).getAllByRole("listitem");
     expect(eventItems).toHaveLength(mockEvents.length);
 
-    // Check each event's summary and location
-    expect(screen.getByText(/Event 1/i)).toBeInTheDocument();
-    expect(screen.getByText(/Berlin, Germany/i)).toBeInTheDocument();
-    expect(screen.getByText(/Event 2/i)).toBeInTheDocument();
-    expect(screen.getByText(/Munich, Germany/i)).toBeInTheDocument();
+    // Check each item’s content
+    expect(eventItems[0]).toHaveTextContent("Event 1");
+    expect(eventItems[0]).toHaveTextContent("Berlin, Germany");
+
+    expect(eventItems[1]).toHaveTextContent("Event 2");
+    expect(eventItems[1]).toHaveTextContent("Munich, Germany");
+  });
+
+  test("matches snapshot", () => {
+    const { asFragment } = render(<EventList events={mockEvents} />);
+    expect(asFragment()).toMatchSnapshot();
   });
 });

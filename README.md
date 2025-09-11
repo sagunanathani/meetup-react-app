@@ -151,3 +151,33 @@ CLIENT_ID (get its value from your Google Calendar API credentials file)
 CLIENT_SECRET (get it from your Google Calendar API credentials file)
 CALENDAR_ID (set its value to this string: "fullstackwebdev@careerfoundry.com")
 Note that this demo repo contains a sample solution for the Exercise 4.4 task
+
+testing>
+
+Unit Testing for Features 1-3 (_exercise:4.4_)
+
+- Feature 1: EventList and Event components tested for rendering and toggle details
+- Feature 2: Event info (title, time, location) and show/hide details functionality tested
+- Feature 3: NumberOfEvents component tested for default value and input changes
+- Coverage improved to 82-100% for all components
+
+Integration Testing Feature 3: Implement specify number of events functionality (_exercise:4.5_)
+
+- Added integration test for NumberOfEvents and EventList to ensure the number
+  of events displayed matches the user input (Feature 3).
+- Updated App.jsx to include state `currentNOE` (current number of events).
+- Passed setter function to NumberOfEvents component to update event count.
+- Modified useEffect to fetch events whenever `currentCity` or `currentNOE` changes.
+- Updated NumberOfEvents component to handle user input and trigger state update.
+- Verified functionality manually: changing number of events updates EventList correctly.
+- Applied CSS styling to center event box and improve readability.
+- All tests passing successfully.
+
+chore(tests): implement acceptance tests for city search and event filtering (_exercise:4.6_)
+
+- Added jest-cucumber feature tests for filtering events by city
+- Tested user interactions: typing in city textbox, viewing suggestions, and selecting a city
+- Integrated mock event data to simulate API responses
+- Updated tests to use React Testing Library's screen API to avoid AppDOM undefined errors
+- Ensured that event lists update correctly based on selected city
+- Wrapped async interactions in act(...) to suppress React state update warnings
