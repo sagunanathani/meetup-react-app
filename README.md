@@ -228,3 +228,20 @@ Add end-to-end testing with Puppeteer:
 - Configured Jest with increased timeout to support real browser runs.
 - Added setupTests.js to filter noisy console warnings during test execution.
 - Verified tests with both headless (fast) and non-headless (debug) modes.
+
+Task
+feat: Add BDD acceptance tests for Features 2 & 3 in Meet App
+
+- Feature 2 (Show/Hide Event Details):
+
+  - Added showHideAnEventsDetails.feature with scenarios.
+  - Implemented showHideAnEventsDetails.test.js using jest-cucumber.
+  - Tested default collapsed state, expand/collapse functionality.
+
+- Feature 3 (Specify Number of Events):
+
+  - Added specifyNumberOfEvents.feature with scenarios.
+  - Implemented acceptance tests for default number of events and user-specified number.
+
+- Tests use React Testing Library queries (queryByRole, within) and waitFor for async handling.
+- Bonus Feature 1 E2E tests temporarily excluded for faster test runs.

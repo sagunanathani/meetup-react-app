@@ -3,78 +3,130 @@
  */
 import puppeteer from "puppeteer";
 
+// ----------------------------
+// End-to-End Tests for Show/Hide Event Details
+// ----------------------------
 describe("show/hide an event details", () => {
-  let browser; // will hold the browser instance
-  let page; // will hold the page instance
+  let browser; // Puppeteer browser instance
+  let page; // Puppeteer page/tab instance
 
   // ----------------------------
   // Runs once before all tests
+  // Launches the browser and navigates to the app
   // ----------------------------
   beforeAll(async () => {
-    // Launch a real Chrome browser (non-headless) for visual debugging
+    jest.setTimeout(60000); // 🔹 Increase timeout for Puppeteer setup
     browser = await puppeteer.launch({
-      headless: false,
-      slowMo: 250, // slow down by 250ms,
-      timeout: 0, // removes any puppeteer/browser timeout limitations (this isn't the same as the timeout of jest)
-      executablePath:
-        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", // path to Chrome
-      args: ["--no-sandbox", "--disable-setuid-sandbox"], // required in some environments
-      defaultViewport: null, // full window size
+      headless: false, // 🔹 Set false to see browser UI (debugging)
+      slowMo: 250, // 🔹 Slow down each operation by 250ms
+      args: ["--no-sandbox", "--disable-setuid-sandbox"], // Required in some environments
+      defaultViewport: null, // 🔹 Full window size
     });
 
-    // Open a new tab/page
+    // Open a new tab
     page = await browser.newPage();
 
-    // Navigate to local React app
+    // Navigate to the local React app
     await page.goto("http://localhost:5173/", { waitUntil: "networkidle0" });
 
     // Wait until at least one event is rendered on the page
-    await page.waitForFunction(
-      () => document.querySelectorAll(".event").length > 0,
-      { timeout: 20000 } // wait up to 20 seconds
-    );
-  });
+    await page.waitForSelector(".event");
+  }, 30000);
 
   // ----------------------------
   // Runs once after all tests
+  // Closes the browser to free resources
   // ----------------------------
   afterAll(async () => {
-    if (browser) await browser.close(); // close the browser
+    if (browser) await browser.close();
   });
 
   // ----------------------------
   // Test 1: Event details are collapsed by default
   // ----------------------------
-  test("An event element is collapsed by default", async () => {
-    // Select the first event
-    const event = await page.$(".event");
-    expect(event).not.toBeNull(); // ensure event exists
-
-    // Check that the event details section is not visible
+  test("Event details are collapsed by default", async () => {
+    // 🔹 Select the event details element
     const eventDetails = await page.$(".event-description");
-    expect(eventDetails).toBeNull();
-  }, 30000); // timeout increased to 30 seconds
+
+    // 🔹 Check visibility if the element exists
+    if (eventDetails) {
+      const visible = await eventDetails.evaluate(
+        (el) => window.getComputedStyle(el).display !== "none"
+      );
+      expect(visible).toBe(false); // should be hidden by default
+    } else {
+      expect(eventDetails).toBeNull(); // no element in DOM
+    }
+  }, 30000);
 
   // ----------------------------
-  // Test 2: User can expand an event to see details
+  // Test 2: User can expand an event to see its details
   // ----------------------------
   test("User can expand an event to see its details", async () => {
-    // Click the button to show event details
-    await page.click(".event button"); // selector matches your JSX <button>
+    // 🔹 Wait until the button is visible, then click it
+    await page.waitForSelector(".event button", { visible: true });
+    await page.click(".event button");
 
-    // Check that the event details are now visible
+    // 🔹 Wait for the details to appear
+    await page.waitForSelector(".event-description", { visible: true });
+
+    // 🔹 Ensure the details are now visible
     const eventDetails = await page.$(".event-description");
-    expect(eventDetails).toBeDefined();
-  });
+    expect(eventDetails).not.toBeNull();
+  }, 30000);
 
   // ----------------------------
   // Test 3: User can collapse an event to hide its details
   // ----------------------------
   test("User can collapse an event to hide its details", async () => {
-    await page.click(".event .details-btn"); // Click again to collapse
-    // wait for description to show
-    await page.waitForSelector(".event-description", { visible: true });
+    // 🔹 Click the collapse button
+    await page.waitForSelector(".event .details-btn", { visible: true });
+    await page.click(".event .details-btn");
+
+    // 🔹 Wait until details are hidden
+    await page.waitForFunction(
+      () =>
+        !document.querySelector(".event-description") ||
+        document.querySelector(".event-description").offsetParent === null
+    );
+
+    // 🔹 Check the visibility state
     const eventDetails = await page.$(".event-description");
-    expect(eventDetails).not.toBeNull();
+    const visible = eventDetails
+      ? await eventDetails.evaluate(
+          (el) => window.getComputedStyle(el).display !== "none"
+        )
+      : false;
+    expect(visible).toBe(false); // should be hidden after collapsing
+  }, 60000);
+});
+
+// ----------------------------
+// Filter Events by City (Optimized)
+// ----------------------------
+describe("Filter events by city", () => {
+  let browser;
+  let page;
+
+  beforeAll(async () => {
+    jest.setTimeout(60000);
+    browser = await puppeteer.launch({
+      headless: false,
+      slowMo: 100,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      defaultViewport: null,
+    });
+    page = await browser.newPage();
+    await page.goto("http://localhost:5173/", { waitUntil: "networkidle0" });
+    await page.waitForSelector(".event");
+  }, 40000);
+
+  afterAll(async () => {
+    if (browser) await browser.close();
+  });
+
+  test("By default, all events are displayed", async () => {
+    const eventsCount = await page.$$eval(".event", (events) => events.length);
+    expect(eventsCount).toBeGreaterThan(0);
   });
 });
