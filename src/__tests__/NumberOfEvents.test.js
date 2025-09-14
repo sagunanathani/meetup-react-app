@@ -9,7 +9,16 @@ test("renders number input and calls onNumberChange", async () => {
   // Wrapper to manage controlled component state
   const Wrapper = () => {
     const [number, setNumber] = useState(32);
-    return <NumberOfEvents number={number} onNumberChange={setNumber} />;
+    // eslint-disable-next-line no-unused-vars
+    const [error, setError] = useState(""); // no-unused-vars removed
+
+    return (
+      <NumberOfEvents
+        number={number}
+        onNumberChange={setNumber}
+        setErrorAlert={setError}
+      />
+    );
   };
 
   render(<Wrapper />);
@@ -17,9 +26,11 @@ test("renders number input and calls onNumberChange", async () => {
   const input = screen.getByRole("spinbutton");
   expect(input).toHaveValue(32);
 
-  // Type 10
+  // Clear the input
   await user.clear(input);
+  // Type 10
   await user.type(input, "10");
 
-  expect(input).toHaveValue(10); // Now controlled value updates
+  // Wait for controlled component state to update
+  expect(input).toHaveValue(10);
 });

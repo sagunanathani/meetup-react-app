@@ -1,15 +1,28 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CitySearch from "../components/CitySearch";
-import { cleanup } from "@testing-library/react";
+
 const allLocations = ["Berlin, Germany", "Munich, Germany", "London, UK"];
 
 describe("<CitySearch /> component", () => {
-  const mockSetCity = jest.fn();
+  let mockSetCity;
+  let mockSetInfoAlert;
 
   beforeEach(() => {
-    mockSetCity.mockClear();
-    render(<CitySearch locations={allLocations} onCityChange={mockSetCity} />);
+    mockSetCity = jest.fn();
+    mockSetInfoAlert = jest.fn();
+
+    render(
+      <CitySearch
+        locations={allLocations}
+        onCityChange={mockSetCity}
+        setInfoAlert={mockSetInfoAlert} // ✅ pass mock
+      />
+    );
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   test("renders text input with class 'city'", () => {
@@ -68,6 +81,7 @@ describe("<CitySearch /> component", () => {
 
     expect(cityTextBox).toHaveValue("Berlin, Germany");
     expect(mockSetCity).toHaveBeenCalledWith("Berlin, Germany");
+    expect(mockSetInfoAlert).toHaveBeenCalledWith(""); // alert cleared
   });
 
   test("selecting 'See all cities' updates the textbox value", async () => {
@@ -82,14 +96,23 @@ describe("<CitySearch /> component", () => {
 
     expect(cityTextBox).toHaveValue("all");
     expect(mockSetCity).toHaveBeenCalledWith("all");
+    expect(mockSetInfoAlert).toHaveBeenCalledWith(""); // alert cleared
   });
 
-  // New test: type a city not in locations
-  test("shows only 'See all cities' when typing a city not in locations", async () => {
-    await typeCityAndCheckSuggestions("NonExistentCity", ["See all cities"]);
+  test("shows info alert when typing a city not in locations", async () => {
+    const user = userEvent.setup();
+    const cityTextBox = screen.getByRole("textbox", {
+      name: /search for a city/i,
+    });
+    await user.click(cityTextBox);
+    await user.clear(cityTextBox);
+    await user.type(cityTextBox, "NonExistentCity");
+
+    expect(mockSetInfoAlert).toHaveBeenCalledWith(
+      "We can not find the city you are looking for. Please try another city"
+    );
   });
 
-  // New test: typing the same city twice
   test("typing the same city twice maintains suggestions correctly", async () => {
     const user = userEvent.setup();
     const cityTextBox = screen.getByRole("textbox", {
@@ -97,11 +120,9 @@ describe("<CitySearch /> component", () => {
     });
     await user.click(cityTextBox);
 
-    // First type
     await user.clear(cityTextBox);
     await user.type(cityTextBox, "Berlin");
 
-    // Second type (same value)
     await user.clear(cityTextBox);
     await user.type(cityTextBox, "Berlin");
 
@@ -109,19 +130,34 @@ describe("<CitySearch /> component", () => {
     expect(suggestionItems).toHaveLength(2); // Berlin + See all cities
   });
 
-  // New test: handles empty locations gracefully
   test("handles empty locations prop gracefully", async () => {
-    cleanup(); // remove any previous renders
+    cleanup();
     const user = userEvent.setup();
-    render(<CitySearch locations={[]} onCityChange={mockSetCity} />);
+
+    render(
+      <CitySearch
+        locations={[]} // empty array
+        onCityChange={jest.fn()}
+        setInfoAlert={mockSetInfoAlert} // must pass mock
+      />
+    );
+
     const cityTextBox = screen.getByRole("textbox", {
       name: /search for a city/i,
     });
+
     await user.click(cityTextBox);
-    await user.type(cityTextBox, "Berlin");
+    await user.type(cityTextBox, "Berlin"); // type once
 
     const suggestionItems = await screen.findAllByRole("listitem");
-    expect(suggestionItems).toHaveLength(1); // Only "See all cities"
+
+    // Only "See all cities" should be rendered
+    expect(suggestionItems).toHaveLength(1);
     expect(suggestionItems[0]).toHaveTextContent("See all cities");
+
+    // Alert should be called because the city is not found
+    expect(mockSetInfoAlert).toHaveBeenCalledWith(
+      "We can not find the city you are looking for. Please try another city"
+    );
   });
 });

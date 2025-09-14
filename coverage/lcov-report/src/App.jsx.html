@@ -137,10 +137,7 @@
 <a name='L72'></a><a href='#L72'>72</a>
 <a name='L73'></a><a href='#L73'>73</a>
 <a name='L74'></a><a href='#L74'>74</a>
-<a name='L75'></a><a href='#L75'>75</a>
-<a name='L76'></a><a href='#L76'>76</a>
-<a name='L77'></a><a href='#L77'>77</a>
-<a name='L78'></a><a href='#L78'>78</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L75'></a><a href='#L75'>75</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -148,51 +145,48 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">80x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">236x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -222,28 +216,24 @@ import { getEvents } from "./api";
 import EventList from "./components/EventList";
 import NumberOfEvents from "./components/NumberOfEvents";
 import CitySearch from "./components/CitySearch";
-import { events as mockEvents } from "./mock-data";
-import process from "process";
+import { InfoAlert, ErrorAlert } from "./components/InfoAlert";
 &nbsp;
 function App() {
   const [events, setEvents] = useState([]);
   const [currentNOE, setCurrentNOE] = useState(32);
   const [currentCity, setCurrentCity] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [infoAlert, setInfoAlert] = useState("");
+  const [errorText, setErrorText] = useState("");
 &nbsp;
   useEffect(() =&gt; {
     const fetchEvents = async () =&gt; {
       setLoading(true);
-&nbsp;
       try {
-        const allEvents =
-          process.env.REACT_APP_USE_MOCK === "true"
-            ? <span class="branch-0 cbranch-no" title="branch not covered" >mockEvents</span>
-            : await getEvents();
-        console.log("Mock events in app:", mockEvents);
-        setEvents(allEvents || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span>; // fallback to empty array
+        const allEvents = await getEvents();
+        setEvents(allEvents || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span>;
       } catch (error) {
-<span class="cstat-no" title="statement not covered" >        console.error("Error fetching events:", error);</span>
+<span class="cstat-no" title="statement not covered" >        setErrorText("Failed to fetch events. Please try again later.");</span>
       } finally {
         setLoading(false);
       }
@@ -251,19 +241,11 @@ function App() {
     fetchEvents();
   }, []);
 &nbsp;
-  // Get unique city locations for the CitySearch component
-  // Prevent map from running if events is undefined
-  const allLocations = events?.length
-    ? [...new Set(events.map((e) =&gt; e.location))]
-    : [];
-&nbsp;
-  // Filter events by city
   const filteredEvents =
     currentCity === "all"
       ? events
       : events.filter((event) =&gt; event.location === currentCity);
 &nbsp;
-  // Limit events based on NumberOfEvents input
   const eventsToDisplay = filteredEvents.slice(0, currentNOE);
 &nbsp;
   return (
@@ -271,21 +253,30 @@ function App() {
       &lt;h1&gt;Meetup Events App&lt;/h1&gt;
       &lt;p className="subtitle"&gt;Find and explore upcoming events in your city&lt;/p&gt;
 &nbsp;
-      {/* Controls */}
-      &lt;div className="controls"&gt;
-        &lt;CitySearch locations={allLocations} onCityChange={setCurrentCity} /&gt;
-        &lt;NumberOfEvents number={currentNOE} onNumberChange={setCurrentNOE} /&gt;
+      &lt;div className="alerts-container"&gt;
+        {infoAlert &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >&lt;InfoAlert text={infoAlert} /&gt;}</span>
+        {errorText &amp;&amp; &lt;ErrorAlert text={errorText} /&gt;}
       &lt;/div&gt;
 &nbsp;
-      {/* Loading state */}
+      &lt;div className="controls"&gt;
+        &lt;CitySearch
+          locations={[...new Set(events.map((e) =&gt; e.location))]}
+          onCityChange={setCurrentCity}
+          setInfoAlert={setInfoAlert}
+        /&gt;
+        &lt;NumberOfEvents
+          number={currentNOE}
+          onNumberChange={setCurrentNOE}
+          setErrorAlert={setErrorText}
+        /&gt;
+      &lt;/div&gt;
+&nbsp;
       {loading &amp;&amp; &lt;p className="loading"&gt;Loading events...&lt;/p&gt;}
 &nbsp;
-      {/* Event list */}
       {!loading &amp;&amp; eventsToDisplay.length &gt; 0 &amp;&amp; (
         &lt;EventList events={eventsToDisplay} /&gt;
       )}
 &nbsp;
-      {/* No events message */}
       {!loading &amp;&amp; eventsToDisplay.length === 0 &amp;&amp; (
 <span class="branch-2 cbranch-no" title="branch not covered" >        &lt;p className="no-events"&gt;No events found for this city.&lt;/p&gt;</span>
       )}
@@ -301,7 +292,7 @@ export default App;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-11T21:51:15.076Z
+                at 2025-09-14T16:16:17.459Z
             </div>
         <script src="../prettify.js"></script>
         <script>

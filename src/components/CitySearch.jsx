@@ -21,12 +21,24 @@ class CitySearch extends Component {
     ) {
       this.setState({ query, suggestions });
     }
+
+    // 🔹 InfoAlert logic
+    if (suggestions.length === 0) {
+      this.props.setInfoAlert(
+        "We can not find the city you are looking for. Please try another city"
+      );
+    } else {
+      this.props.setInfoAlert("");
+    }
   };
 
   handleSuggestionClicked = (suggestion) => {
     const selectedCity = suggestion === "See all cities" ? "all" : suggestion;
     this.setState({ query: selectedCity, suggestions: [] });
     this.props.onCityChange(selectedCity);
+
+    // 🔹 Clear alert on city selection
+    this.props.setInfoAlert("");
   };
 
   render() {
@@ -78,6 +90,7 @@ class CitySearch extends Component {
 CitySearch.propTypes = {
   locations: PropTypes.array.isRequired,
   onCityChange: PropTypes.func.isRequired,
+  setInfoAlert: PropTypes.func.isRequired,
 };
 
 export default CitySearch;

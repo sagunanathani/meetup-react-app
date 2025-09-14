@@ -1,6 +1,11 @@
 import { loadFeature, defineFeature } from "jest-cucumber";
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import {
+  render,
+  screen,
+  waitFor,
+  act,
+  fireEvent,
+} from "@testing-library/react";
 import App from "../App";
 import { events as mockData } from "../mock-data";
 
@@ -13,6 +18,8 @@ defineFeature(feature, (test) => {
     // eslint-disable-next-line no-unused-vars
     let app;
     when("the app loads", () => {
+      // eslint-disable-next-line no-undef
+      process.env.REACT_APP_USE_MOCK = "true";
       app = render(<App />);
     });
 
@@ -24,20 +31,29 @@ defineFeature(feature, (test) => {
   });
 
   test("User can change the number of events", ({ given, when, then }) => {
-    given("the user has opened the app", () => {});
-
     // eslint-disable-next-line no-unused-vars
     let app;
-    when('the user types "5" in the number of events input', async () => {
+    let input;
+
+    given("the user has opened the app", async () => {
+      // eslint-disable-next-line no-undef
+      process.env.REACT_APP_USE_MOCK = "true";
       app = render(<App />);
-      const input = await screen.findByRole("spinbutton"); // assuming input type="number"
-      userEvent.clear(input);
-      userEvent.type(input, "5");
+      input = await screen.findByRole("spinbutton");
+    });
+
+    when('the user types "5" in the number of events input', async () => {
+      // Wrap input change in act to ensure state updates before assertion
+      await act(async () => {
+        fireEvent.change(input, { target: { value: 5 } });
+      });
     });
 
     then("the app should display 5 events", async () => {
-      const events = await waitFor(() => screen.getAllByRole("listitem"));
-      expect(events.length).toBe(5);
+      await waitFor(() => {
+        const events = screen.getAllByRole("listitem");
+        expect(events.length).toBe(5);
+      });
     });
   });
 });

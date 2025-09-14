@@ -1,35 +1,45 @@
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { render, screen, within, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import App from "../App";
 
+const mockEvents = Array.from({ length: 32 }, (_, i) => ({
+  id: i + 1,
+  summary: `Event ${i + 1}`,
+  location: i % 2 === 0 ? "Berlin, Germany" : "Munich, Germany",
+  start: { dateTime: "2025-09-10T10:00" },
+  created: "2025-09-01T08:00",
+}));
+
 jest.mock("../api", () => ({
-  getEvents: jest.fn(() =>
-    Promise.resolve(
-      Array.from({ length: 32 }, (_, i) => ({
-        id: i + 1,
-        summary: `Event ${i + 1}`,
-        location: i % 2 === 0 ? "Berlin, Germany" : "Munich, Germany",
-        start: { dateTime: "2025-09-10T10:00" },
-        created: "2025-09-01T08:00",
-      }))
-    )
-  ),
+  getEvents: jest.fn(() => Promise.resolve(mockEvents)),
 }));
 
 test("renders number of events matching user input", async () => {
   render(<App />);
+  const user = userEvent.setup();
+
+  // Wait until initial events are rendered
+  const eventList = await screen.findByTestId("event-list");
+  const initialItems = within(eventList).getAllByRole("listitem");
+  expect(initialItems.length).toBeGreaterThan(0);
 
   const numberInput = screen.getByRole("spinbutton");
 
-  // Change the input value to 10
-  fireEvent.change(numberInput, { target: { value: 10 } });
+  // Clear the input and type "10"
+  await user.clear(numberInput);
+  await user.type(numberInput, "10");
 
-  // Wait for events to update
-  await waitFor(() => {
-    const renderedEvents = screen.getAllByRole("listitem");
-    expect(renderedEvents.length).toBe(10);
-  });
+  // Wait for input to reflect the correct value
+  await waitFor(() => expect(numberInput).toHaveValue(10));
 
-  // Optional: check first and last events in the slice
-  expect(screen.getByText("Event 1")).toBeInTheDocument();
-  expect(screen.getByText("Event 10")).toBeInTheDocument();
+  // Wait for event list to update
+  const updatedList = await screen.findByTestId("event-list");
+  const items = within(updatedList).getAllByRole("listitem");
+  expect(items.length).toBe(10);
+
+  // Confirm displayed events match mock summaries and locations
+  for (let i = 0; i < 10; i++) {
+    expect(items[i]).toHaveTextContent(mockEvents[i].summary);
+    expect(items[i]).toHaveTextContent(mockEvents[i].location);
+  }
 });

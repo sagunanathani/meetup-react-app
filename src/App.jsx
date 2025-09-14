@@ -3,28 +3,24 @@ import { getEvents } from "./api";
 import EventList from "./components/EventList";
 import NumberOfEvents from "./components/NumberOfEvents";
 import CitySearch from "./components/CitySearch";
-import { events as mockEvents } from "./mock-data";
-import process from "process";
+import { InfoAlert, ErrorAlert } from "./components/InfoAlert";
 
 function App() {
   const [events, setEvents] = useState([]);
   const [currentNOE, setCurrentNOE] = useState(32);
   const [currentCity, setCurrentCity] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [infoAlert, setInfoAlert] = useState("");
+  const [errorText, setErrorText] = useState("");
 
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
-
       try {
-        const allEvents =
-          process.env.REACT_APP_USE_MOCK === "true"
-            ? mockEvents
-            : await getEvents();
-        console.log("Mock events in app:", mockEvents);
-        setEvents(allEvents || []); // fallback to empty array
+        const allEvents = await getEvents();
+        setEvents(allEvents || []);
       } catch (error) {
-        console.error("Error fetching events:", error);
+        setErrorText("Failed to fetch events. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -32,19 +28,11 @@ function App() {
     fetchEvents();
   }, []);
 
-  // Get unique city locations for the CitySearch component
-  // Prevent map from running if events is undefined
-  const allLocations = events?.length
-    ? [...new Set(events.map((e) => e.location))]
-    : [];
-
-  // Filter events by city
   const filteredEvents =
     currentCity === "all"
       ? events
       : events.filter((event) => event.location === currentCity);
 
-  // Limit events based on NumberOfEvents input
   const eventsToDisplay = filteredEvents.slice(0, currentNOE);
 
   return (
@@ -52,21 +40,30 @@ function App() {
       <h1>Meetup Events App</h1>
       <p className="subtitle">Find and explore upcoming events in your city</p>
 
-      {/* Controls */}
-      <div className="controls">
-        <CitySearch locations={allLocations} onCityChange={setCurrentCity} />
-        <NumberOfEvents number={currentNOE} onNumberChange={setCurrentNOE} />
+      <div className="alerts-container">
+        {infoAlert && <InfoAlert text={infoAlert} />}
+        {errorText && <ErrorAlert text={errorText} />}
       </div>
 
-      {/* Loading state */}
+      <div className="controls">
+        <CitySearch
+          locations={[...new Set(events.map((e) => e.location))]}
+          onCityChange={setCurrentCity}
+          setInfoAlert={setInfoAlert}
+        />
+        <NumberOfEvents
+          number={currentNOE}
+          onNumberChange={setCurrentNOE}
+          setErrorAlert={setErrorText}
+        />
+      </div>
+
       {loading && <p className="loading">Loading events...</p>}
 
-      {/* Event list */}
       {!loading && eventsToDisplay.length > 0 && (
         <EventList events={eventsToDisplay} />
       )}
 
-      {/* No events message */}
       {!loading && eventsToDisplay.length === 0 && (
         <p className="no-events">No events found for this city.</p>
       )}
