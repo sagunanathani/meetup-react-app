@@ -18,14 +18,13 @@ function App() {
     const fetchEvents = async () => {
       setLoading(true);
 
-      // check online/offline status
-      if (navigator.onLine) {
-        setWarningText("");
-      } else {
-        console.console.log("Offline mode activated");
+      // Show warning if offline
+      if (!navigator.onLine) {
         setWarningText(
-          "You are offline. Events are loaded from cache and may not be up to date."
+          "You are offline. The events shown may be from the cache and not up to date."
         );
+      } else {
+        setWarningText("");
       }
 
       try {
@@ -39,7 +38,22 @@ function App() {
     };
 
     fetchEvents();
-  }, [currentCity, currentNOE]); // ✅ re-check warning + fetch when filters change
+
+    // Listen for online/offline changes dynamically
+    const handleOnline = () => setWarningText("");
+    const handleOffline = () =>
+      setWarningText(
+        "You are offline. The events shown may be from the cache and not up to date."
+      );
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, [currentCity, currentNOE]);
 
   const filteredEvents =
     currentCity === "all"
@@ -73,11 +87,9 @@ function App() {
       </div>
 
       {loading && <p className="loading">Loading events...</p>}
-
       {!loading && eventsToDisplay.length > 0 && (
         <EventList events={eventsToDisplay} />
       )}
-
       {!loading && eventsToDisplay.length === 0 && (
         <p className="no-events">No events found for this city.</p>
       )}

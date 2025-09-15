@@ -260,8 +260,7 @@ input:focus {
 .suggestions li {
   padding: 8px 12px;
   cursor: pointer;
-  color: #333 !important; /* dark text for readability */
-  background-color: #fff; /* default background */
+  background-color: #fff !important; /* default background */
   transition: background-color 0.2s;
 }
 

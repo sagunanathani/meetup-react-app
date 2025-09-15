@@ -1,4 +1,3 @@
-// api.js
 import { events as mockEvents } from "./mock-data.js";
 
 // ----------------------------
@@ -9,8 +8,7 @@ const checkToken = async (accessToken) => {
     const response = await fetch(
       `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
     );
-    const result = await response.json();
-    return result;
+    return await response.json();
   } catch (error) {
     console.error("Error checking token:", error);
     return { error: "invalid_token" };
@@ -26,9 +24,7 @@ const getToken = async (code) => {
     const response = await fetch(
       `https://q2wbsdt1he.execute-api.eu-central-1.amazonaws.com/dev/api/token/${encodeCode}`
     );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const { access_token } = await response.json();
     if (access_token) localStorage.setItem("access_token", access_token);
     return access_token;
@@ -44,28 +40,23 @@ export const getAccessToken = async () => {
   let accessToken = localStorage.getItem("access_token");
   let tokenCheck = accessToken && (await checkToken(accessToken));
 
-  // No token or token invalid → handle OAuth flow
   if (!accessToken || tokenCheck?.error) {
-    await localStorage.removeItem("access_token");
+    localStorage.removeItem("access_token");
 
-    const searchParams = new URLSearchParams(window.location.search);
-    const code = searchParams.get("code");
+    const code = new URLSearchParams(window.location.search).get("code");
 
     if (!code) {
       // Redirect to Google Auth
-      const response = await fetch(
-        "https://q2wbsdt1he.execute-api.eu-central-1.amazonaws.com/dev/api/get-auth-url"
-      );
-      const result = await response.json();
-      const { authUrl } = result;
+      const { authUrl } = await (
+        await fetch(
+          "https://q2wbsdt1he.execute-api.eu-central-1.amazonaws.com/dev/api/get-auth-url"
+        )
+      ).json();
       window.location.href = authUrl;
-      return null; // stop execution while redirecting
+      return null;
     }
 
-    // Exchange code for token
     accessToken = await getToken(code);
-
-    // Remove ?code= from URL after token is stored
     removeQuery();
   }
 
@@ -75,7 +66,6 @@ export const getAccessToken = async () => {
 // ----------------------------
 // Remove query params from URL
 // ----------------------------
-//This prevents the ?code= parameter from staying in the URL after the token is stored.
 const removeQuery = () => {
   const newurl =
     window.location.protocol +
@@ -86,52 +76,56 @@ const removeQuery = () => {
 };
 
 // ----------------------------
-// Fetch events from Google Calendar API with offline support
+// Fetch events with offline support
 // ----------------------------
 export const getEvents = async () => {
   console.log("getEvents called");
 
   // ----------------------------
-  // 1. Offline: load from localStorage
+  // Offline mode
   // ----------------------------
   if (!navigator.onLine) {
-    const events = localStorage.getItem("lastEvents");
-    console.log("Offline: loading events from localStorage");
-    return events ? JSON.parse(events) : [];
+    const cachedEvents = localStorage.getItem("lastEvents");
+    if (cachedEvents) {
+      console.log("Offline: loading events from cache");
+      return JSON.parse(cachedEvents);
+    } else if (window.location.href.startsWith("http://localhost")) {
+      console.log("Offline on localhost: loading mockEvents");
+      localStorage.setItem("lastEvents", JSON.stringify(mockEvents));
+      return mockEvents;
+    } else {
+      console.log("Offline with no cached events available");
+      return [];
+    }
   }
 
   // ----------------------------
-  // 2. Localhost: return mock data
+  // Localhost online
   // ----------------------------
   if (window.location.href.startsWith("http://localhost")) {
+    localStorage.setItem("lastEvents", JSON.stringify(mockEvents));
     return mockEvents;
   }
 
   // ----------------------------
-  // 3. Online: fetch token and validate
+  // Online deployed
   // ----------------------------
   let token = await getAccessToken();
-  if (!token) return null; // exit if redirecting
+  if (!token) return null;
 
   const tokenCheck = await checkToken(token);
   if (!token || tokenCheck?.error) {
-    await localStorage.removeItem("access_token");
+    localStorage.removeItem("access_token");
     token = await getAccessToken();
-    if (!token) return null; // exit if still invalid
+    if (!token) return null;
   }
 
-  // ----------------------------
-  // 4. Fetch events from API
-  // ----------------------------
   const url = `https://q2wbsdt1he.execute-api.eu-central-1.amazonaws.com/dev/api/get-events/${token}`;
   const response = await fetch(url);
   const result = await response.json();
 
   if (result?.events) {
-    // Save events in localStorage for offline usage
     localStorage.setItem("lastEvents", JSON.stringify(result.events));
     return result.events;
-  } else {
-    return null;
-  }
+  } else return null;
 };
