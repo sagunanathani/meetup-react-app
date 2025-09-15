@@ -86,20 +86,33 @@ const removeQuery = () => {
 };
 
 // ----------------------------
-// Fetch events from Google Calendar API
+// Fetch events from Google Calendar API with offline support
 // ----------------------------
 export const getEvents = async () => {
   console.log("getEvents called");
 
-  // Use mock data on localhost - for api data comments this only if condition
+  // ----------------------------
+  // 1. Offline: load from localStorage
+  // ----------------------------
+  if (!navigator.onLine) {
+    const events = localStorage.getItem("lastEvents");
+    console.log("Offline: loading events from localStorage");
+    return events ? JSON.parse(events) : [];
+  }
+
+  // ----------------------------
+  // 2. Localhost: return mock data
+  // ----------------------------
   if (window.location.href.startsWith("http://localhost")) {
     return mockEvents;
   }
 
+  // ----------------------------
+  // 3. Online: fetch token and validate
+  // ----------------------------
   let token = await getAccessToken();
   if (!token) return null; // exit if redirecting
 
-  // Check token validity again
   const tokenCheck = await checkToken(token);
   if (!token || tokenCheck?.error) {
     await localStorage.removeItem("access_token");
@@ -107,8 +120,18 @@ export const getEvents = async () => {
     if (!token) return null; // exit if still invalid
   }
 
+  // ----------------------------
+  // 4. Fetch events from API
+  // ----------------------------
   const url = `https://q2wbsdt1he.execute-api.eu-central-1.amazonaws.com/dev/api/get-events/${token}`;
   const response = await fetch(url);
   const result = await response.json();
-  return result ? result.events : null;
+
+  if (result?.events) {
+    // Save events in localStorage for offline usage
+    localStorage.setItem("lastEvents", JSON.stringify(result.events));
+    return result.events;
+  } else {
+    return null;
+  }
 };
