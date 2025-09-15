@@ -3,7 +3,7 @@ import { getEvents } from "./api";
 import EventList from "./components/EventList";
 import NumberOfEvents from "./components/NumberOfEvents";
 import CitySearch from "./components/CitySearch";
-import { InfoAlert, ErrorAlert } from "./components/InfoAlert";
+import { InfoAlert, ErrorAlert, WarningAlert } from "./components/InfoAlert";
 
 function App() {
   const [events, setEvents] = useState([]);
@@ -12,10 +12,22 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [infoAlert, setInfoAlert] = useState("");
   const [errorText, setErrorText] = useState("");
+  const [warningText, setWarningText] = useState("");
 
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
+
+      // check online/offline status
+      if (navigator.onLine) {
+        setWarningText("");
+      } else {
+        console.console.log("Offline mode activated");
+        setWarningText(
+          "You are offline. Events are loaded from cache and may not be up to date."
+        );
+      }
+
       try {
         const allEvents = await getEvents();
         setEvents(allEvents || []);
@@ -25,8 +37,9 @@ function App() {
         setLoading(false);
       }
     };
+
     fetchEvents();
-  }, []);
+  }, [currentCity, currentNOE]); // ✅ re-check warning + fetch when filters change
 
   const filteredEvents =
     currentCity === "all"
@@ -43,6 +56,7 @@ function App() {
       <div className="alerts-container">
         {infoAlert && <InfoAlert text={infoAlert} />}
         {errorText && <ErrorAlert text={errorText} />}
+        {warningText && <WarningAlert text={warningText} />}
       </div>
 
       <div className="controls">
