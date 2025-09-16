@@ -4,6 +4,7 @@ import EventList from "./components/EventList";
 import NumberOfEvents from "./components/NumberOfEvents";
 import CitySearch from "./components/CitySearch";
 import { InfoAlert, ErrorAlert, WarningAlert } from "./components/InfoAlert";
+import CityEventsChart from "./components/CityEventsChart";
 
 function App() {
   const [events, setEvents] = useState([]);
@@ -55,12 +56,17 @@ function App() {
     };
   }, [currentCity, currentNOE]);
 
+  // Filter events by selected city
   const filteredEvents =
     currentCity === "all"
       ? events
       : events.filter((event) => event.location === currentCity);
 
+  // Limit events by NumberOfEvents
   const eventsToDisplay = filteredEvents.slice(0, currentNOE);
+
+  // Extract unique list of all locations
+  const allLocations = [...new Set(events.map((e) => e.location))];
 
   return (
     <div className="App">
@@ -75,7 +81,7 @@ function App() {
 
       <div className="controls">
         <CitySearch
-          locations={[...new Set(events.map((e) => e.location))]}
+          locations={allLocations}
           onCityChange={setCurrentCity}
           setInfoAlert={setInfoAlert}
         />
@@ -85,6 +91,9 @@ function App() {
           setErrorAlert={setErrorText}
         />
       </div>
+
+      {/* Chart goes here */}
+      <CityEventsChart allLocations={allLocations} events={events} />
 
       {loading && <p className="loading">Loading events...</p>}
       {!loading && eventsToDisplay.length > 0 && (
