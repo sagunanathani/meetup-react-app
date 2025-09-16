@@ -5,6 +5,7 @@ import NumberOfEvents from "./components/NumberOfEvents";
 import CitySearch from "./components/CitySearch";
 import { InfoAlert, ErrorAlert, WarningAlert } from "./components/InfoAlert";
 import CityEventsChart from "./components/CityEventsChart";
+import EventGenresChart from "./components/EventGenresChart";
 
 function App() {
   const [events, setEvents] = useState([]);
@@ -19,7 +20,6 @@ function App() {
     const fetchEvents = async () => {
       setLoading(true);
 
-      // Show warning if offline
       if (!navigator.onLine) {
         setWarningText(
           "You are offline. The events shown may be from the cache and not up to date."
@@ -40,7 +40,6 @@ function App() {
 
     fetchEvents();
 
-    // Listen for online/offline changes dynamically
     const handleOnline = () => setWarningText("");
     const handleOffline = () =>
       setWarningText(
@@ -54,18 +53,15 @@ function App() {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
-  }, [currentCity, currentNOE]);
+  }, []);
 
-  // Filter events by selected city
+  // Filter and limit events
   const filteredEvents =
     currentCity === "all"
       ? events
       : events.filter((event) => event.location === currentCity);
-
-  // Limit events by NumberOfEvents
   const eventsToDisplay = filteredEvents.slice(0, currentNOE);
 
-  // Extract unique list of all locations
   const allLocations = [...new Set(events.map((e) => e.location))];
 
   return (
@@ -92,13 +88,36 @@ function App() {
         />
       </div>
 
-      {/* Chart goes here */}
-      <CityEventsChart allLocations={allLocations} events={events} />
+      {/* Charts container */}
+      <div className="charts-container">
+        <div className="chart-wrapper">
+          <CityEventsChart
+            allLocations={allLocations}
+            events={eventsToDisplay}
+          />
+          <h3
+            style={{ textAlign: "center", marginTop: "10px", color: "#8884d8" }}
+          >
+            Events
+          </h3>
+        </div>
+
+        <div className="chart-wrapper">
+          <EventGenresChart events={eventsToDisplay} />
+          <h3
+            style={{ textAlign: "center", marginTop: "10px", color: "#8884d8" }}
+          >
+            Event Genres
+          </h3>
+        </div>
+      </div>
 
       {loading && <p className="loading">Loading events...</p>}
+
       {!loading && eventsToDisplay.length > 0 && (
         <EventList events={eventsToDisplay} />
       )}
+
       {!loading && eventsToDisplay.length === 0 && (
         <p className="no-events">No events found for this city.</p>
       )}
