@@ -1,8 +1,41 @@
+// ----------------------------
+// Set process.env and mock ResizeObserver BEFORE imports
+// ----------------------------
+// eslint-disable-next-line no-undef
+process.env.REACT_APP_USE_MOCK = "true";
+
+class ResizeObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+// eslint-disable-next-line no-undef
+global.ResizeObserver = ResizeObserverMock;
+
+// ----------------------------
+// Mock Recharts ResponsiveContainer
+// ----------------------------
+jest.mock("recharts", () => {
+  const OriginalModule = jest.requireActual("recharts");
+  return {
+    ...OriginalModule,
+    ResponsiveContainer: ({ children }) => {
+      if (typeof children === "function") {
+        return children({ width: 800, height: 400 });
+      }
+      return children;
+    },
+  };
+});
+
+// ----------------------------
+// Test imports
+// ----------------------------
 import { loadFeature, defineFeature } from "jest-cucumber";
 import { render, screen, within, act } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import App from "../App";
 import { events as mockData } from "../mock-data";
-import userEvent from "@testing-library/user-event";
 
 // Mock API
 jest.mock("../api", () => ({
@@ -63,7 +96,6 @@ defineFeature(feature, (test) => {
         const suggestionListItems =
           within(suggestionList).getAllByRole("listitem");
 
-        // Only include matching locations + "See all cities"
         const expectedCount = mockData.some((e) =>
           e.location.includes("Berlin")
         )
@@ -99,14 +131,13 @@ defineFeature(feature, (test) => {
       const suggestionsList = await screen.findByTestId("suggestions-list");
       suggestionListItems = within(suggestionsList).getAllByRole("listitem");
 
-      expect(suggestionListItems.length).toBeGreaterThanOrEqual(1); // at least "See all cities"
+      expect(suggestionListItems.length).toBeGreaterThanOrEqual(1);
     });
 
     when(
       "the user selects a city (e.g., “Berlin, Germany”) from the list",
       async () => {
         const user = userEvent.setup();
-        // click the first real location, if it exists; else click "See all cities"
         await user.click(
           suggestionListItems.find((li) => li.textContent.includes("Berlin")) ||
             suggestionListItems[0]
@@ -117,7 +148,7 @@ defineFeature(feature, (test) => {
     then(
       "their city should be changed to that city (i.e., “Berlin, Germany”)",
       () => {
-        expect(citySearchInput.value).toMatch(/Berlin|all/); // matches selected city or fallback
+        expect(citySearchInput.value).toMatch(/Berlin|all/);
       }
     );
 

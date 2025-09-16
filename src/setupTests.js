@@ -1,4 +1,32 @@
-// src/setupTests.js
+// ----------------------------
+// Mock ResizeObserver globally
+// ----------------------------
+if (typeof window !== "undefined") {
+  class ResizeObserverMock {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+  window.ResizeObserver = ResizeObserverMock;
+}
+
+// ----------------------------
+// Mock Recharts ResponsiveContainer
+// ----------------------------
+jest.mock("recharts", () => {
+  const OriginalModule = jest.requireActual("recharts");
+  return {
+    ...OriginalModule,
+    ResponsiveContainer: ({ children }) => {
+      // Ensure children is a function
+      if (typeof children === "function") {
+        return children({ width: 800, height: 400 });
+      }
+      // Fallback in case children is a node
+      return children;
+    },
+  };
+});
 
 // ----------------------------
 // Extend Jest with additional matchers
@@ -6,29 +34,23 @@
 import "@testing-library/jest-dom";
 
 // ----------------------------
-// Suppress specific warning messages in the console
+// Suppress specific warning messages
 // ----------------------------
-// Only ignore messages that match these patterns
 const MESSAGES_TO_IGNORE = [
   "When testing, code that causes React state updates should be wrapped into >act(...):",
   "Error:",
   "The above error occurred",
 ];
 
-// Save the original console.error function
 const originalError = console.error.bind(console.error);
-
-// Override console.error to filter out the messages we want to ignore
 console.error = (...args) => {
-  const ignoreMessage = MESSAGES_TO_IGNORE.find((message) =>
-    args.toString().includes(message)
+  const ignoreMessage = MESSAGES_TO_IGNORE.find((msg) =>
+    args.toString().includes(msg)
   );
-  if (!ignoreMessage) {
-    originalError(...args); // Log anything else normally
-  }
+  if (!ignoreMessage) originalError(...args);
 };
 
 // ----------------------------
-// Set a global Jest timeout for long-running tests (like Puppeteer e2e tests)
+// Set a global Jest timeout
 // ----------------------------
 jest.setTimeout(30000);
