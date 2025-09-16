@@ -5,6 +5,7 @@
   "hints": {
     "highest-available-document-mode": "off",
     "button-type": "off",
-    "apple-touch-icons": "off"
+    "apple-touch-icons": "off",
+    "meta-viewport": "off"
   }
 }
