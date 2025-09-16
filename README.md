@@ -245,3 +245,114 @@ feat: Add BDD acceptance tests for Features 2 & 3 in Meet App
 
 - Tests use React Testing Library queries (queryByRole, within) and waitFor for async handling.
 - Bonus Feature 1 E2E tests temporarily excluded for faster test runs.
+
+(_exercise:4.7_)
+Monitoring & CI/CD
+This project is monitored using Atatus, which provides insights into performance, errors, and abnormal activity across different browsers and operating systems. The integration ensures that the app’s behavior is tracked in real time, helping identify and resolve potential issues quickly.
+
+Task 4.7 Summary:
+Created a trial account on Atatus and set up a new project for the Meetup Events App.
+Integrated Atatus into the app following the official instructions.
+Deployed the app to the production environment for live monitoring.
+Collected data by visiting the app across multiple browsers and devices.
+Reviewed Atatus dashboard reports to analyze:
+Loading and response times.
+Errors and abnormal activity.
+Differences in performance across browsers/OS.
+Documented findings, screenshots, and resolutions in a PDF report.
+Reflected on CI/CD practices, including:
+CI (Continuous Integration): Automates testing and integration of code changes.
+CD (Continuous Deployment/Delivery): Automates deployment of verified code to production.
+Advantages include faster feedback, early detection of issues, and consistent deployment practices.
+CI/CD could be applied during the development of the Meetup Events App to automate tests and deploy updates seamlessly.
+
+(_exercise:4.8_)
+Task 4.8: Alerts Implementation
+In this task, we implemented alerts in the Meetup Events App using object-oriented principles, providing real-time feedback to users for various scenarios.
+
+Alerts Implemented
+
+1. InfoAlert
+   Purpose: Inform users of minor issues, such as entering an invalid city name during search.
+   Appearance: Usually displayed in blue.
+   Implementation: Tied to a state variable (infoAlert) in App.jsx. Renders dynamically when the state is non-empty.
+
+2. ErrorAlert
+   Purpose: Warn users when entering an invalid number of events (negative number, zero, or non-numeric input).
+   Appearance: Displayed in red.
+   Implementation:
+   Tied to a state variable (errorText) in App.jsx.
+   Setter function passed to NumberOfEvents component.
+   Logic uses isNaN(value) or (value <= 0) to determine when to display the error.
+   Automatically hides the alert when valid input is provided.
+
+Implementation Steps
+Created the ErrorAlert component extending the base Alert class, alongside InfoAlert.
+Imported ErrorAlert into App.jsx and rendered it after InfoAlert inside the same alerts-container.
+Updated the NumberOfEvents component to use the setter function for errorText, ensuring alerts show correctly for invalid input.
+Verified functionality by running tests and fixing failing unit tests in NumberOfEvents.test.js.
+Checked alerts work locally by entering invalid values and confirming proper alert messages.
+Deployed the updated app to Vercel and ensured alerts function in the production environment.
+
+Results
+Users receive immediate visual feedback for invalid city search or number of events input.
+Improves UX and reduces invalid input issues.
+Fully tested to ensure correct rendering and logic handling.
+
+(_exercise:4.9_)
+Task 4.9: Converting the App into a PWA
+The Meetup Events App has been upgraded into a Progressive Web Application (PWA), allowing users to install it on their devices and use it offline.
+
+Steps Implemented
+
+1. Manifest Configuration
+   Customized manifest.json with app name, icons, colors, and theme.
+   Ensures proper app display when installed on a device.
+
+2. Service Worker
+   Registered a service worker to cache assets and event data.
+   Enables offline use of the app, even when no internet connection is available.
+
+3. Offline Functionality
+   Cached the list of events using localStorage.
+   When offline, the app loads events from the cache, ensuring continuous usability.
+
+4. WarningAlert Component
+   Implemented WarningAlert in src/components/Alert.jsx.
+   Notifies users when the displayed list is loaded from the cache and may not be up to date.
+   Uses the Online State API (navigator.onLine) to detect online/offline status.
+   Integrated into App.jsx alongside InfoAlert and ErrorAlert.
+
+5. Testing & Deployment
+   Verified offline functionality by disabling the network in browsers and ensuring cached events display correctly.
+   Deployed the app with all PWA functionality enabled.
+
+(_exercise:4.10_)
+Task 4.10: Implementing Charts & Data Visualization
+The Meetup Events App now includes interactive charts that help users understand event distribution and popularity. Two types of charts are implemented: a scatterplot for events per city, and a pie chart for event topics/genres.
+
+Scatterplot: Events by City
+Implemented using the Recharts ScatterChart component.
+Displays the number of events in each city dynamically.
+Placed inside a responsive charts-container in App.jsx.
+Fully responsive and adjusts automatically when the browser window changes size.
+Helps users quickly see which cities have the most events.
+
+Pie Chart: Event Genres
+Implemented using the Recharts PieChart component.
+Displays the popularity of event topics such as React, JavaScript, Node, jQuery, and Angular.
+Dynamically calculates the number of events per genre using the summary field from event data.
+Includes customized labels that show both genre name and percentage of total events.
+Uses the Cell component to assign distinct colors to each pie slice.
+Includes a legend to clarify which color corresponds to which genre.
+
+Implementation Highlights
+Created EventGenresChart.jsx for the pie chart.
+Passed events from App.jsx as props to both chart components.
+Used useEffect() to update chart data when events change.
+charts-container uses CSS grid for responsive side-by-side layout:
+Fully responsive on desktop, tablet, and mobile devices.
+
+Bonus Features
+Custom Colors for pie chart slices using <Cell fill={colors[index]} />.
+Legend positioned at the bottom of the chart for better clarity.
